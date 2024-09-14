@@ -1,3 +1,5 @@
-export function greet(name: string): string {
-    return `Hello, ${name}!`;
-  }
+import { Dictionary } from "./dictionary";
+
+const dictionary = new Dictionary();
+const result = dictionary.find("chicken");
+console.log(result);
