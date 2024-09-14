@@ -1,4 +1,4 @@
-import { Dictionary } from "./dictionary";
+import { Dictionary } from "./Dictionary";
 import dictionaryData from "./data/dictionary_compact.json";
 
 describe("Dictionary", () => {
@@ -69,4 +69,29 @@ describe("Dictionary", () => {
     const result = dictionary.wordsBySubstring('cat').get();
     expect(result.every(word => word.word.includes('cat'))).toBe(true);
   });
+
+
+  it('', () => {
+    const dict = new Dictionary({
+        maskWordInDescription: '*'
+      });
+    const test = "The quality of being admissible; admissibleness; as, the admissibility of evidence."
+    const word = dict.find('admissibility');
+    expect(word?.description).toEqual('The quality of being admissible; admissibleness; as, the * of evidence.')
+  });
+
+  it('', () => {
+
+    const dict = new Dictionary({
+        maskWordInDescription: '*'
+      });
+      const test = "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the sagittal suture; in the region of the sagittal suture; rabdoidal; as, the sagittal furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a sagittal section of an animal. Sagittal suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
+      const word = dict.find('sagittal');
+    const expected = "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the * suture; in the region of the * suture; rabdoidal; as, the * furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a * section of an animal. * suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
+    expect(word?.description).toEqual(expected);
+  });
+
+
+
+
 });
