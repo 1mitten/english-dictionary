@@ -33,14 +33,13 @@ export class Dictionary {
     } else {
       this.data = this.transformData(dictionaryData as Record<string, string>);
     }
+ 
     if (options?.maskWordInDescription) {
-        this.transformDescriptions(options.maskWordInDescription);
-      }
+      this.transformDescriptions(options.maskWordInDescription);
+    }
     const minLength = options?.wordMinLength ?? Dictionary.MIN_WORD_LENGTH;
     const maxLength = options?.wordMaxLength ?? Dictionary.MAX_WORD_LENGTH;
     this.filteredData = this.filterByLengthRange(minLength, maxLength);
-
-
   }
 
   private transformData(
@@ -57,12 +56,11 @@ export class Dictionary {
 
     return transformed;
   }
-
   private transformDescriptions(char: string): void {
     Object.entries(this.data).forEach(([word, description]) => {
       const regex = new RegExp(`\\b${word}\\b`, "gi");
       const updatedDescription = description.replace(regex, char);
-      this.data[word] = updatedDescription;
+      this.data[word] = updatedDescription; // Update the description in the data
     });
   }
   private filterByLengthRange(
@@ -103,10 +101,9 @@ export class Dictionary {
 
   public findMany(words: string[]): WordDescription[] {
     return words
-    .map((word) => this.find(word))
-    .filter((wordDesc): wordDesc is WordDescription => !!wordDesc);
+      .map((word) => this.find(word))
+      .filter((wordDesc): wordDesc is WordDescription => !!wordDesc);
   }
-
 
   public get(): WordDescription[] {
     return Object.entries(this.filteredData).map(([word, description]) => ({

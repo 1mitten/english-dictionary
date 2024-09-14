@@ -50,48 +50,61 @@ describe("Dictionary", () => {
     expect(result.length).toBeGreaterThan(100);
   });
 
-  it('should return words by length range', () => {
+  it("should return words by length range", () => {
     const result = dictionary.wordsByLengthRange(3, 5).get();
-    expect(result.every(word => word.word.length >= 3 && word.word.length <= 5)).toBe(true);
+    expect(
+      result.every((word) => word.word.length >= 3 && word.word.length <= 5)
+    ).toBe(true);
   });
 
-  it('should return words by a prefix', () => {
-    const result = dictionary.wordsByPrefix('pre').get();
-    expect(result.every(word => word.word.startsWith('pre'))).toBe(true);
+  it("should return words by a prefix", () => {
+    const result = dictionary.wordsByPrefix("pre").get();
+    expect(result.every((word) => word.word.startsWith("pre"))).toBe(true);
   });
 
-  it('should return words by a suffix', () => {
-    const result = dictionary.wordsBySuffix('ing').get();
-    expect(result.every(word => word.word.endsWith('ing'))).toBe(true);
+  it("should return words by a suffix", () => {
+    const result = dictionary.wordsBySuffix("ing").get();
+    expect(result.every((word) => word.word.endsWith("ing"))).toBe(true);
   });
 
-  it('should return words by a substring', () => {
-    const result = dictionary.wordsBySubstring('cat').get();
-    expect(result.every(word => word.word.includes('cat'))).toBe(true);
+  it("should return words by a substring", () => {
+    const result = dictionary.wordsBySubstring("cat").get();
+    expect(result.every((word) => word.word.includes("cat"))).toBe(true);
   });
 
-
-  it('', () => {
+  it("Should mask the word in the description with asterix", () => {
     const dict = new Dictionary({
-        maskWordInDescription: '*'
-      });
-    const test = "The quality of being admissible; admissibleness; as, the admissibility of evidence."
-    const word = dict.find('admissibility');
-    expect(word?.description).toEqual('The quality of being admissible; admissibleness; as, the * of evidence.')
+      maskWordInDescription: "*",
+    });
+    const test =
+      "The quality of being admissible; admissibleness; as, the admissibility of evidence.";
+    const word = dict.find("admissibility");
+    expect(word?.description).toEqual(
+      "The quality of being admissible; admissibleness; as, the * of evidence."
+    );
   });
 
-  it('', () => {
-
+  it("Should mask the word in the description with asterix", () => {
     const dict = new Dictionary({
-        maskWordInDescription: '*'
-      });
-      const test = "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the sagittal suture; in the region of the sagittal suture; rabdoidal; as, the sagittal furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a sagittal section of an animal. Sagittal suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
-      const word = dict.find('sagittal');
-    const expected = "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the * suture; in the region of the * suture; rabdoidal; as, the * furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a * section of an animal. * suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
+      maskWordInDescription: "*",
+    });
+    const test =
+      "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the sagittal suture; in the region of the sagittal suture; rabdoidal; as, the sagittal furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a sagittal section of an animal. Sagittal suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
+    const word = dict.find("sagittal");
+    const expected =
+      "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the * suture; in the region of the * suture; rabdoidal; as, the * furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a * section of an animal. * suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
     expect(word?.description).toEqual(expected);
   });
 
-
-
-
+  it("Should mask the word in the description with asterix", () => {
+    const dict = new Dictionary({
+      maskWordInDescription: "*",
+    });
+    const test =
+      "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the sagittal suture; in the region of the sagittal suture; rabdoidal; as, the sagittal furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a sagittal section of an animal. Sagittal suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
+    const word = dict.find("sagittal");
+    const expected =
+      "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the * suture; in the region of the * suture; rabdoidal; as, the * furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a * section of an animal. * suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
+    expect(word?.description).toEqual(expected);
+  });
 });
