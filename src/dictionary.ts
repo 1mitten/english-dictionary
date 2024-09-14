@@ -101,6 +101,13 @@ export class Dictionary {
     return undefined;
   }
 
+  public findMany(words: string[]): WordDescription[] {
+    return words
+    .map((word) => this.find(word))
+    .filter((wordDesc): wordDesc is WordDescription => !!wordDesc);
+  }
+
+
   public get(): WordDescription[] {
     return Object.entries(this.filteredData).map(([word, description]) => ({
       word,
