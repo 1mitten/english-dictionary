@@ -5,6 +5,7 @@ import clues_six from "./data/clues/clues_six.json";
 import { DatasetLoader } from "./DatasetLoader";
 import { WordMetadata } from "./types/WordMetadata.type";
 import { Options } from "./types/Options.type";
+import { Provider } from './Provider';
 
 /**
  *  Default options that is suitable enough for a decent base
@@ -32,7 +33,7 @@ const defaultOptions: Options = {
  * const dictionary = new Dictionary({})
  * ```
  */
-export class Dictionary {
+export class Dictionary implements Provider {
   private data: Map<string, WordMetadata>;
   private filteredData: Map<string, WordMetadata>;
 
@@ -256,7 +257,7 @@ export class Dictionary {
     });
     return this;
   }
-  
+
 
   /**
    * Filter words by suffix, For example 'ing' will return returning, praying and running.
