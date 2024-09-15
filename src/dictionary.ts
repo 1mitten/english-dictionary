@@ -71,15 +71,6 @@ export class Dictionary {
       this.data.set(word, { word, description, tags, isDictionaryWord: true });
     });
   }
-
-  private loadWeapons(weaponData: { melee: string[]; ranged: string[] }): void {
-    // Process melee weapons
-    this.applyTagToWords(weaponData.melee, "weapons:old:melee");
-
-    // Process ranged weapons
-    this.applyTagToWords(weaponData.ranged, "weapons:old:ranged");
-  }
-
   // Mask words in their descriptions
   private maskWordsInDescriptions(maskChar: string): void {
     this.data.forEach((wordDescription, word) => {
@@ -107,18 +98,6 @@ export class Dictionary {
       }
     });
     return filteredMap;
-  }
-
-  // Apply a specific tag to a list of words
-  private applyTagToWords(words: string[], tag: string): void {
-    words.forEach((word) => {
-      const normalizedWord = word.toLowerCase();
-      const wordDescription = this.data.get(normalizedWord);
-      if (wordDescription) {
-        wordDescription.tags = [...(wordDescription.tags || []), tag];
-        this.data.set(normalizedWord, wordDescription); // Update the data
-      }
-    });
   }
 
   // Load multiple clue datasets at once
