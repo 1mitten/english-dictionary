@@ -7,7 +7,7 @@ const dictionary = new Dictionary({
   includeDataFromDatasets: true
 });
 
-const words = dictionary.wordsWithClues();
+const words = dictionary.exportToJson();
 
 console.log(words);
 console.log(words.length)

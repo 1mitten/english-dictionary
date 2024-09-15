@@ -248,6 +248,12 @@ export class Dictionary {
     return taggedWords;
   }
 
+  public exportToJson(): string {
+    const dataObject = Object.fromEntries(this.data);
+    const jsonString = JSON.stringify(dataObject, null, 2);
+    return jsonString;
+  }
+
   // Reset filtering
   public reset(): this {
     this.filteredData = this.filterByLengthRange(
