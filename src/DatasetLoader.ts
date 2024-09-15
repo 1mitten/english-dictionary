@@ -67,10 +67,11 @@ export class DatasetLoader {
 
   /**
    * Loads all datasets and applies tagging
-   * @returns 
+   * @returns
    */
-  public loadDatasets(data: Map<string, WordMetadata>): Map<string, WordMetadata> {
-  
+  public loadDatasets(
+    data: Map<string, WordMetadata>
+  ): Map<string, WordMetadata> {
     Object.keys(this.datasetConfig).forEach((datasetKey: string) => {
       const { data: words, tags } = this.datasetConfig[datasetKey];
       this.applyTagsToWords(words, tags, data);
@@ -81,9 +82,9 @@ export class DatasetLoader {
 
   /**
    *  Dynamically apply tags based on the data structure (arrays, objects, etc.)
-   * @param words 
-   * @param baseTags 
-   * @param dictionary 
+   * @param words
+   * @param baseTags
+   * @param dictionary
    */
   public applyTagsToWords(
     words: any, // Any type of dataset
@@ -127,39 +128,29 @@ export class DatasetLoader {
 
   /**
    * Used to merge tags into dictionary and also handles additional words
-   * @param word 
-   * @param tags 
-   * @param dictionary 
+   * @param word
+   * @param tags
+   * @param dictionary
    */
   private addWordToDictionary(
     word: string,
     tags: string[],
     dictionary: Map<string, WordMetadata>
   ): void {
-
-
     const existingWord = dictionary.get(word);
-    
+
     if (existingWord) {
- //     console.log(`Word '${word}' already exists. Current description: '${existingWord.description}'. Merging tags: ${tags.join(", ")}`);
-      // If the word already exists, merge the tags and retain the existing description
-      existingWord.tags = [...new Set([...(existingWord.tags || []), ...tags])]; // Ensure unique tags
+      existingWord.tags = [...new Set([...(existingWord.tags || []), ...tags])];
       dictionary.set(word, existingWord);
     } else {
-      if(word === 'cat'){
-        console.log('WTF');
-        console.log(existingWord)
-        }
- //     console.log(`Adding new word '${word}' with tags: ${tags.join(", ")}`);
-      // Otherwise, create a new entry for the word in the dictionary
       dictionary.set(word, {
         word,
-        description: `Tagged with ${tags.join(", ")}`, // Set only if no description exists
+        description: `Tagged with ${tags.join(", ")}`,
         isDictionaryWord: false,
         tags,
       });
     }
+
+
   }
-  
-  
 }

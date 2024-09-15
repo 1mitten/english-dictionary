@@ -6,10 +6,10 @@ Datasets are preloaded with default tagging and is cross referenced to tag the d
 for a variety of use cases such as:-
 
 - Word Games
+- Generate content from use of tagging and words
 - For English Dictionary lookup
 - To inject your own data and use
 - To create an export or migration of data 
-- Use of a taggable word
 
 <h5>Create new instance and perform a simple word find</h5>
 

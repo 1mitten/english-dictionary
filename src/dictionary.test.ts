@@ -1,4 +1,3 @@
-import { DatasetLoader } from "./DatasetLoader";
 import { Dictionary } from "./Dictionary";
 import { WordMetadata } from "./types/WordMetadata.type";
 import dictionaryData from "./data/dictionary_compact.json";
@@ -258,8 +257,7 @@ describe("Dictionary", () => {
   it('should return different sets of random words (non-deterministic)', () => {
     const firstSet = dictionary.getRandomWords(3);
     const secondSet = dictionary.getRandomWords(3);
-    console.log(firstSet);
-    console.log(secondSet)
+
     // These might or might not be equal since it's random, so we allow the possibility of difference.
     expect(firstSet).not.toEqual(secondSet);
   });
