@@ -17,6 +17,9 @@ This package provides a queryable English dictionary with descriptions, enriched
 - Content Generation: Use tags and word data to generate content.
 - Dictionary Lookup: Perform traditional English dictionary lookups.
 - Custom Datasets: Inject and use your own datasets to extend functionality.
+- Frontend Prototypes: Use this is as a datastore
+- Backend/API Prototypes: Use this is as a datastore
+
 
 <h5>Create new instance and perform a simple word find</h5>
 
