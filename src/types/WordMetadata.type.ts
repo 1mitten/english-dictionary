@@ -1,5 +1,5 @@
 
-export type WordDescription = {
+export type WordMetadata = {
   word: string;
   description: string;
   isDictionaryWord: boolean;

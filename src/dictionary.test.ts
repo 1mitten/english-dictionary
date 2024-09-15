@@ -1,6 +1,6 @@
 import { DatasetLoader } from "./DatasetLoader";
 import { Dictionary } from "./Dictionary";
-import { WordDescription } from "./types/WordDescription.type";
+import { WordMetadata } from "./types/WordMetadata.type";
 import dictionaryData from "./data/dictionary_compact.json";
 
 describe("Dictionary", () => {
@@ -8,7 +8,7 @@ describe("Dictionary", () => {
   let dictionaryMasked: Dictionary;
   let dictionarySimple: Dictionary;
   const dictSource = dictionaryData as Record<string, string>;
-  const wordDescs: WordDescription[] = [
+  const wordDescs: WordMetadata[] = [
     {
       word: "apple",
       description: "A fruit",
@@ -36,7 +36,6 @@ describe("Dictionary", () => {
     {
       word: "elephant",
       description: "A large animal",
-      tags: ["animal"],
       isDictionaryWord: true,
     }
   ];
@@ -172,7 +171,6 @@ describe("Dictionary", () => {
   });
   it("should reset filteredData based on word length range", () => {
     dictionarySimple.reset();
-     console.log(dictionarySimple);
     expect(dictionarySimple["filteredData"].size).toBe(4);
     expect(dictionarySimple["filteredData"].has("apple")).toBe(true);
     expect(dictionarySimple["filteredData"].has("banana")).toBe(true);
@@ -249,16 +247,19 @@ describe("Dictionary", () => {
     expect(result.length).toBe(0); // None of these words exist
     expect(result).toEqual([]); // Should return an empty array
   });
+
   it('should return the correct number of random words', () => {
     const result = dictionary.getRandomWords(3); // Get 3 random words
 
     expect(result.length).toBe(3); // Expect exactly 3 words to be returned
   });
 
+
   it('should return different sets of random words (non-deterministic)', () => {
     const firstSet = dictionary.getRandomWords(3);
     const secondSet = dictionary.getRandomWords(3);
-
+    console.log(firstSet);
+    console.log(secondSet)
     // These might or might not be equal since it's random, so we allow the possibility of difference.
     expect(firstSet).not.toEqual(secondSet);
   });
@@ -283,7 +284,6 @@ describe("Dictionary", () => {
   });
   it('should return words that match all specified tags when matchAll is true', () => {
     const result = dictionarySimple.findWordsByTags(['fruit', 'food'], true);
-console.log(dictionarySimple);
     expect(result.length).toBe(1); // Only "apple" has both 'fruit' and 'food' tags
     expect(result[0].word).toBe('apple');
   });
@@ -315,13 +315,4 @@ console.log(dictionarySimple);
 
     expect(result.length).toBe(0); // No tags are provided, so nothing should match
   });
-
-  // it('should exclude words without tags from the result', () => {
-  //   const result = dictionarySimple.wordsByTags(['fruit'], false);
-
-  //   const resultWords = result.map(wordDesc => wordDesc.word);
-  //   expect(resultWords).toContain('apple');
-  //   expect(resultWords).toContain('banana');
-  //   expect(resultWords).not.toContain('date'); // "date" has no tags
-  // });
 });

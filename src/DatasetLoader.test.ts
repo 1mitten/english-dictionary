@@ -1,13 +1,13 @@
 import { DatasetLoader } from './DatasetLoader';
-import { WordDescription } from "./types/WordDescription.type";
+import { WordMetadata } from "./types/WordMetadata.type";
 
 describe('DatasetLoader', () => {
   let datasetLoader: DatasetLoader;
-  let dictionary: Map<string, WordDescription>;
+  let dictionary: Map<string, WordMetadata>;
 
   beforeEach(() => {
     datasetLoader = new DatasetLoader();
-    dictionary = new Map<string, WordDescription>();
+    dictionary = new Map<string, WordMetadata>();
   });
 
   it('should handle simple arrays of words and apply base tags', () => {

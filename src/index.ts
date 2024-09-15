@@ -8,7 +8,11 @@ const dictionary = new Dictionary({
   loadCluesDataset: true
 });
 
-const words = dictionary.findWordsByTags(['weapon:old:melee','vegetable'], false)
+let words;
+
+
+
+ words = dictionary.getRandomWords(3);
 
 console.log(words);
 

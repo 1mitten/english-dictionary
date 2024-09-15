@@ -20,7 +20,7 @@ import vegetables from "./data/vegetables.json";
 import verbs from "./data/verbs.json";
 import vehicles from "./data/vehicles.json";
 import old_weapons from "./data/old_weapons.json";
-import { WordDescription } from "./types/WordDescription.type";
+import { WordMetadata } from "./types/WordMetadata.type";
 
 type DatasetConfig = {
   [key: string]: { data: any; tags: string[] };
@@ -69,8 +69,8 @@ export class DatasetLoader {
    * Loads all datasets and applies tagging
    * @returns 
    */
-  public loadDatasets(): Map<string, WordDescription> {
-    const data = new Map<string, WordDescription>();
+  public loadDatasets(): Map<string, WordMetadata> {
+    const data = new Map<string, WordMetadata>();
 
     Object.keys(this.datasetConfig).forEach((datasetKey: string) => {
       const { data: words, tags } = this.datasetConfig[datasetKey];
@@ -89,7 +89,7 @@ export class DatasetLoader {
   public applyTagsToWords(
     words: any, // Any type of dataset
     baseTags: string[],
-    dictionary: Map<string, WordDescription>
+    dictionary: Map<string, WordMetadata>
   ): void {
     if (Array.isArray(words)) {
       // Handle simple arrays of strings (e.g., ["dog", "cat"])
@@ -135,7 +135,7 @@ export class DatasetLoader {
   private addWordToDictionary(
     word: string,
     tags: string[],
-    dictionary: Map<string, WordDescription>
+    dictionary: Map<string, WordMetadata>
   ): void {
     const existingWord = dictionary.get(word);
     if (existingWord) {
