@@ -1,5 +1,7 @@
 # english-dictionary
 
+[![english-dictionary](https://github.com/1mitten/english-dictionary/actions/workflows/ci.yml/badge.svg)](https://github.com/1mitten/english-dictionary/actions/workflows/ci.yml)
+
 Contains a queryable english dictionary with descriptions, and also to pull data using tags.
 
 Datasets are preloaded with default tagging and is cross referenced to tag the dictionary against existing words.  
@@ -76,7 +78,7 @@ dictionary.filter('^').get();
 ['verb','noun','adjectives','adverbs','common','stopwords','objects','vehicles','animals','weapon'
 ,'fabrics','flower','passages','rooms','vegetables']
 
-'countries' is also included by default
+'country' is also included by default
 ```
 
 <h5>Injecting your own data</h5>                 
