@@ -58,7 +58,6 @@ export class DatasetLoader {
     };
   }
 
-  // Load datasets and apply tags
   public loadDatasets(): Map<string, WordDescription> {
     const data = new Map<string, WordDescription>();
 
@@ -97,4 +96,5 @@ export class DatasetLoader {
       }
     });
   }
+  
 }

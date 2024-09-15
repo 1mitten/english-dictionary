@@ -6,10 +6,6 @@ import verbs from "./data/verbs.json";
 import old_weapons from "./data/old_weapons.json";
 import { DatasetLoader } from "./DatasetLoader"; // Import the DatasetLoader class
 
-type DatasetConfig = {
-  [key: string]: { data: string[]; tags: string[] };
-};
-
 export type WordDescription = {
   word: string;
   description: string;
@@ -150,36 +146,53 @@ export class Dictionary {
   }
 
   private loadVerbs(verbData: { present: string; past: string }[]): void {
-    verbData.forEach(({ present, past }) => {
-      const normalizedPresent = present.toLowerCase();
-      const normalizedPast = past.toLowerCase();
-
-      // Add present form with 'verb:present' tag
-      this.addVerbToDictionary(normalizedPresent, "verb:present");
-
-      // Add past form with 'verb:past' tag
-      this.addVerbToDictionary(normalizedPast, "verb:past");
-    });
+    this.loadWordsWithTags(verbData, "verb");
   }
 
-  // Helper method to add verb forms with appropriate tags
-  private addVerbToDictionary(
-    word: string,
-    tag: "verb:present" | "verb:past"
-  ): void {
-    const existingWord = this.data.get(word);
+  private loadWordsWithTags(data: any, baseTag: string): void {
+    if (Array.isArray(data)) {
+      // If data is an array, check if the elements are objects or strings
+      data.forEach((entry) => {
+        if (typeof entry === "object") {
+          // If the entry is an object, loop over its keys and add tags
+          Object.keys(entry).forEach((key) => {
+            const word = entry[key].toLowerCase();
+            this.addWordToDictionary(word, [`${baseTag}:${key}`]);
+          });
+        } else if (typeof entry === "string") {
+          // If the entry is a string, just add the base tag
+          const normalizedWord = entry.toLowerCase();
+          this.addWordToDictionary(normalizedWord, [baseTag]);
+        }
+      });
+    } else if (typeof data === "object") {
+      // If data is a single object, apply specific tags based on the keys
+      Object.keys(data).forEach((key) => {
+        const wordGroup = data[key];
+        if (Array.isArray(wordGroup)) {
+          wordGroup.forEach((word) => {
+            const normalizedWord = word.toLowerCase();
+            this.addWordToDictionary(normalizedWord, [`${baseTag}:${key}`]);
+          });
+        }
+      });
+    }
+  }
+  
 
+  private addWordToDictionary(word: string, tags: string[]): void {
+    const existingWord = this.data.get(word);
     if (existingWord) {
-      // If the word exists, add the new tag to its tags array
-      existingWord.tags = [...(existingWord.tags || []), tag];
+      // If the word exists, merge the tags
+      existingWord.tags = [...(existingWord.tags || []), ...tags];
       this.data.set(word, existingWord);
     } else {
-      // Otherwise, create a new WordDescription with the tag
+      // Otherwise, add it as a new entry with the tags
       this.data.set(word, {
         word,
-        description: `A ${tag.split(":")[1]} form of the verb.`,
+        description: `Tagged with ${tags.join(", ")}`,
         isDictionaryWord: false,
-        tags: [tag],
+        tags,
       });
     }
   }
@@ -196,7 +209,7 @@ export class Dictionary {
   }
 
   public find(word: string): WordDescription | undefined {
-    if(!word) return;
+    if (!word) return;
     return this.data.get(word.toLowerCase());
   }
 
