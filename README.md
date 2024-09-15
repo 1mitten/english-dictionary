@@ -4,13 +4,15 @@
 
 This package provides a queryable English dictionary with descriptions, enriched by tags for various use cases. It comes preloaded with datasets that are cross-referenced to tag existing words and allowing for flexible querying.
 
-<h5>Key Features:</h5>
+<h6>Key Features:</h6>
+
 - Word Lookup: Search for words with detailed descriptions.
 - Tagging System: Filter and query words using predefined tags (e.g., verbs, nouns, adjectives).
 - Custom Data: Inject your own word metadata and tags for custom use cases.
 - Export Data: Generate exports or migrations of the dictionary and associated tags.
 
-<h5>Use Cases:</h5>
+<h6>Use Cases:</h6>
+
 - Word Games: Create games by querying words with specific tags.
 - Content Generation: Use tags and word data to generate content.
 - Dictionary Lookup: Perform traditional English dictionary lookups.
