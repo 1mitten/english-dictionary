@@ -7,7 +7,10 @@
   "types": "dist/index.d.ts",
   "type": "commonjs",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE",
+    "package.json"
   ],
   "scripts": {
     "build": "npm run clean && tsc",
