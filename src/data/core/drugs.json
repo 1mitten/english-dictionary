@@ -1,7 +1,7 @@
 {
   "description": "A list of pharmaceutical drug names",
   "tags": ["science:drugs"],
-  "drugs": [
+  "words": [
     "Abacavir Sulfate",
     "Abatacept",
     "Abilify",

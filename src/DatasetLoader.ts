@@ -1,25 +1,3 @@
-import animals from "./data/core/animals.json";
-import common from "./data/core/common.json";
-import nouns from "./data/core/nouns.json";
-import adverbs from "./data/core/adverbs.json";
-import adjectives from "./data/core/adjectives.json";
-import stopwords from "./data/core/stopwords.json";
-import clothing from "./data/core/clothing.json";
-import containers from "./data/core/containers.json";
-import objects from "./data/core/objects.json";
-import moods from "./data/core/moods.json";
-import monsters from "./data/core/monsters.json";
-import body_parts from "./data/core/body_parts.json";
-import musical_instruments from "./data/core/musical_instruments.json";
-import countries from "./data/core/countries.json";
-import passages from "./data/core/passages.json";
-import rooms from "./data/core/rooms.json";
-import flowers from "./data/core/flowers.json";
-import fabrics from "./data/core/fabrics.json";
-import vegetables from "./data/core/vegetables.json";
-import verbs from "./data/core/verbs.json";
-import vehicles from "./data/core/vehicles.json";
-import old_weapons from "./data/core/old_weapons.json";
 import { WordMetadata } from "./types/WordMetadata.type";
 import fs from "fs";
 import path from "path";
@@ -34,8 +12,8 @@ type DatasetConfig = {
 export class DatasetLoader {
   private datasetConfig: DatasetConfig = {};
 
-  constructor() {
-    const dataPath = path.join(__dirname, 'data', 'core');
+  constructor(customPath?: string) {
+    const dataPath = customPath || path.join(__dirname, 'data', 'core');
     this.loadDatasetsFromDirectory(dataPath) // Specify the directory where your JSON files are
   }
 
@@ -50,6 +28,7 @@ export class DatasetLoader {
       if (path.extname(file) === ".json") {
         const filePath = path.join(directoryPath, file);
         const dataset = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+
         if (dataset.tags && dataset.words) {
           this.datasetConfig[file] = {
             data: dataset.words,

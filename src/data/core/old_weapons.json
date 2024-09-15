@@ -1,7 +1,7 @@
 {
 	"description": "a list of pre-modern combat weapons",
 	"tags": ["weapons:old"],
-	"data": {
+	"words": {
 		"melee": [
 			"dagger",
 			"falchion",
