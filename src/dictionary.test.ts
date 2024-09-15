@@ -40,12 +40,12 @@ describe("Dictionary", () => {
     expect(result).toBeUndefined();
   });
   it("should return all of the 5 letter words from the dictionary without descriptions", () => {
-    const result = dictionary.wordsByLength(5).get();
+    const result = dictionary.wordsByLengthRange(5,5).get();
     expect(result.length).toBeGreaterThan(100);
   });
 
   it("should return all of the 5 letter words from the dictionary with descriptions", () => {
-    const result = dictionary.wordsByLength(5).get();
+    const result = dictionary.wordsByLengthRange(5,5).get();
     expect(result[0].word.length).toBeGreaterThan(0);
     expect(result.length).toBeGreaterThan(100);
   });
