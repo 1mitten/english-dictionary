@@ -160,16 +160,59 @@ describe("Dictionary", () => {
       },
     ];
 
-    const exportDict = new Dictionary({
-      wordMinLength: 3,
-      wordMaxLength: 7,
-      includeDataFromDatasets: false,
-      loadCluesDataset: false
-      
-    }, wordDescs);
+    const exportDict = new Dictionary(
+      {
+        wordMinLength: 3,
+        wordMaxLength: 7,
+        includeDataFromDatasets: false,
+        loadCluesDataset: false,
+      },
+      wordDescs
+    );
     const result = exportDict.exportToJsonString();
 
     expect(exportDict.words?.length).toBe(3);
-    expect(typeof result).toBe('string');
+    expect(typeof result).toBe("string");
+  });
+  it("should reset filteredData based on word length range", () => {
+    const wordDescs: WordDescription[] = [
+      { word: "apple", description: "A fruit", isDictionaryWord: true },
+      { word: "banana", description: "A yellow fruit", isDictionaryWord: true },
+      { word: "car", description: "A vehicle", isDictionaryWord: true },
+      {
+        word: "elephant",
+        description: "A large animal",
+        isDictionaryWord: true,
+      },
+    ];
+
+    const testDict = new Dictionary(
+      {
+        wordMinLength: 3,
+        wordMaxLength: 7,
+        includeDataFromDatasets: false,
+        loadCluesDataset: false,
+      },
+      wordDescs
+    );
+
+    testDict["filteredData"] = new Map<string, WordDescription>([
+      [
+        "elephant",
+        {
+          word: "elephant",
+          description: "A large animal",
+          isDictionaryWord: true,
+        },
+      ],
+    ]);
+
+    testDict.reset();
+
+    expect(testDict["filteredData"].size).toBe(3);
+    expect(testDict["filteredData"].has("apple")).toBe(true);
+    expect(testDict["filteredData"].has("banana")).toBe(true);
+    expect(testDict["filteredData"].has("car")).toBe(true);
+    expect(testDict["filteredData"].has("elephant")).toBe(false);
   });
 });
