@@ -5,6 +5,14 @@ import path from "path";
 type DatasetConfig = {
   [key: string]: { data: any; tags: string[] };
 };
+/**
+ * JSON file structure for loading datasets/tagging
+ */
+type DatasetSchema = {
+  description?: string,
+  tags: string[],
+  words: string[]
+};
 
 /**
  * Used to handle the loading of datasets into dictionary
@@ -27,7 +35,7 @@ export class DatasetLoader {
     files.forEach((file) => {
       if (path.extname(file) === ".json") {
         const filePath = path.join(directoryPath, file);
-        const dataset = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+        const dataset = JSON.parse(fs.readFileSync(filePath, "utf-8")) as DatasetSchema;
 
         if (dataset.tags && dataset.words) {
           this.datasetConfig[file] = {
