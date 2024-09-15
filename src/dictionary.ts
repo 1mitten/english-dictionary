@@ -9,7 +9,7 @@ export type WordDescription = {
   description: string;
   isDictionaryWord: boolean;
   clues?: string[];
-  tags?: string[]; 
+  tags?: string[];
 };
 
 export type Options = {
@@ -46,9 +46,11 @@ export class Dictionary {
       );
     }
 
-    const datasetLoader = new DatasetLoader();
-    const datasetData = datasetLoader.loadDatasets();
-    this.data = new Map([...this.data, ...datasetData]);
+    if (this.options.includeDataFromDatasets) {
+      const datasetLoader = new DatasetLoader();
+      const datasetData = datasetLoader.loadDatasets();
+      this.data = new Map([...this.data, ...datasetData]);
+    }
 
     if (this.options.loadCluesDataset) {
       this.loadClueDatasets([

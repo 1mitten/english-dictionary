@@ -4,11 +4,11 @@ const dictionary = new Dictionary({
   wordMinLength: 5,
   wordMaxLength: 7,
   maskWordInDescription: "*",
-  includeDataFromDatasets: true,
+  includeDataFromDatasets: false,
   loadCluesDataset: true
 });
 
-const words = dictionary.wordsWithClues();
+const words = dictionary.find('waking')
 
 console.log(words);
-console.log(words.length)
+
