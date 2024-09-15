@@ -248,4 +248,34 @@ describe("Dictionary", () => {
     expect(filteredWords).not.toContain("date");
     expect(filteredWords).not.toContain("elephant");
   });
+  it('should return multiple words found in the dictionary', () => {
+    const result = dictionarySimple.findMany(['apple', 'banana']);
+
+    expect(result.length).toBe(2);
+  });
+  it('should return only words found in the dictionary, filtering out non-existent ones', () => {
+    const result = dictionarySimple.findMany(['apple', 'orange', 'banana']);
+
+    expect(result.length).toBe(2); // Only 'apple' and 'banana' exist
+  });
+
+  it('should return an empty array if none of the words are found', () => {
+    const result = dictionarySimple.findMany(['orange', 'grape', 'kiwi']);
+
+    expect(result.length).toBe(0); // None of these words exist
+    expect(result).toEqual([]); // Should return an empty array
+  });
+  it('should return the correct number of random words', () => {
+    const result = dictionary.getRandomWords(3); // Get 3 random words
+
+    expect(result.length).toBe(3); // Expect exactly 3 words to be returned
+  });
+
+  it('should return different sets of random words (non-deterministic)', () => {
+    const firstSet = dictionary.getRandomWords(3);
+    const secondSet = dictionary.getRandomWords(3);
+
+    // These might or might not be equal since it's random, so we allow the possibility of difference.
+    expect(firstSet).not.toEqual(secondSet);
+  });
 });
