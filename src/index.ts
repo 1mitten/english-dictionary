@@ -7,5 +7,7 @@ const dictionary = new Dictionary({
   includeDataFromDatasets: true
 });
 
-const words = dictionary.wordsByTags(["weapons"]);
+const words = dictionary.wordsWithClues();
+
 console.log(words);
+console.log(words.length)

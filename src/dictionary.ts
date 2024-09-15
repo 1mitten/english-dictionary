@@ -201,6 +201,19 @@ export class Dictionary {
     return this;
   }
 
+  public wordsWithClues(): WordDescription[] {
+    const wordsWithClues: WordDescription[] = [];
+  
+    this.data.forEach((wordDescription) => {
+      if (wordDescription.clues && wordDescription.clues.length > 0) {
+        wordsWithClues.push(wordDescription);
+      }
+    });
+  
+    return wordsWithClues;
+  }
+  
+
   public wordsByTags(
     tags: string[],
     matchAll: boolean = true
