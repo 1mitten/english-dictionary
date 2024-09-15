@@ -5,7 +5,40 @@ import dictionaryData from "./data/dictionary_compact.json";
 describe("Dictionary", () => {
   let dictionary: Dictionary;
   let dictionaryMasked: Dictionary;
+  let dictionarySimple: Dictionary;
   const dictSource = dictionaryData as Record<string, string>;
+  const wordDescs: WordDescription[] = [
+    {
+      word: "apple",
+      description: "A fruit",
+      clues: ["It can be red or green"],
+      tags: ["fruit", "food"],
+      isDictionaryWord: true,
+    },
+    {
+      word: "banana",
+      description: "A yellow fruit",
+      tags: ["fruit"],
+      isDictionaryWord: true,
+    },
+    {
+      word: "carrot",
+      description: "A vegetable",
+      tags: ["vegetable"],
+      isDictionaryWord: true,
+    },
+    {
+      word: "date",
+      description: "A type of fruit",
+      isDictionaryWord: true,
+    },
+    {
+      word: "elephant",
+      description: "A large animal",
+      tags: ["animal"],
+      isDictionaryWord: true,
+    }
+  ];
 
   beforeAll(() => {
     dictionary = new Dictionary();
@@ -14,6 +47,15 @@ describe("Dictionary", () => {
       wordMinLength: 3,
       wordMaxLength: 5,
     });
+    dictionarySimple = new Dictionary(
+      {
+        wordMinLength: 3,
+        wordMaxLength: 7,
+        includeDataFromDatasets: false,
+        loadCluesDataset: false,
+      },
+      wordDescs
+    );
   });
 
   it("should transform the JSON data into a case-insensitive dictionary", () => {
@@ -138,81 +180,72 @@ describe("Dictionary", () => {
     }
   });
   it("should export data as a JSON string", () => {
-    const wordDescs: WordDescription[] = [
-      {
-        word: "apple",
-        description: "A fruit",
-        clues: ["It can be red or green"],
-        tags: ["fruit", "food"],
-        isDictionaryWord: true,
-      },
-      {
-        word: "banana",
-        description: "A yellow fruit",
-        tags: ["fruit"],
-        isDictionaryWord: true,
-      },
-      {
-        word: "carrot",
-        description: "A vegetable",
-        tags: ["vegetable"],
-        isDictionaryWord: true,
-      },
-    ];
 
-    const exportDict = new Dictionary(
-      {
-        wordMinLength: 3,
-        wordMaxLength: 7,
-        includeDataFromDatasets: false,
-        loadCluesDataset: false,
-      },
-      wordDescs
-    );
-    const result = exportDict.exportToJsonString();
+    const result = dictionarySimple.exportToJsonString();
 
-    expect(exportDict.words?.length).toBe(3);
+    expect(dictionarySimple.words?.length).toBe(5);
     expect(typeof result).toBe("string");
   });
   it("should reset filteredData based on word length range", () => {
-    const wordDescs: WordDescription[] = [
-      { word: "apple", description: "A fruit", isDictionaryWord: true },
-      { word: "banana", description: "A yellow fruit", isDictionaryWord: true },
-      { word: "car", description: "A vehicle", isDictionaryWord: true },
-      {
-        word: "elephant",
-        description: "A large animal",
-        isDictionaryWord: true,
-      },
-    ];
+    dictionarySimple.reset();
+     console.log(dictionarySimple);
+    expect(dictionarySimple["filteredData"].size).toBe(4);
+    expect(dictionarySimple["filteredData"].has("apple")).toBe(true);
+    expect(dictionarySimple["filteredData"].has("banana")).toBe(true);
+    expect(dictionarySimple["filteredData"].has("carrot")).toBe(true);
+    expect(dictionarySimple["filteredData"].has("date")).toBe(true);
+    expect(dictionarySimple["filteredData"].has("elephant")).toBe(false);
+  });
+  it("should filter words that match the regex pattern", () => {
+    dictionarySimple.filter(/^a/); // Words that start with 'a'
+    const filteredWords = dictionarySimple.getArray(); // Get the filtered words
 
-    const testDict = new Dictionary(
-      {
-        wordMinLength: 3,
-        wordMaxLength: 7,
-        includeDataFromDatasets: false,
-        loadCluesDataset: false,
-      },
-      wordDescs
-    );
+    expect(filteredWords.length).toBe(1); // Only "apple" matches
+    expect(filteredWords).toContain("apple");
+    expect(filteredWords).not.toContain("banana");
+    expect(filteredWords).not.toContain("carrot");
+    expect(filteredWords).not.toContain("elephant");
+  });
 
-    testDict["filteredData"] = new Map<string, WordDescription>([
-      [
-        "elephant",
-        {
-          word: "elephant",
-          description: "A large animal",
-          isDictionaryWord: true,
-        },
-      ],
-    ]);
+  it("should return an empty array when no words match the regex", () => {
+    dictionarySimple.filter(/^z/); // Words that start with 'z'
+    const filteredWords = dictionarySimple.getArray();
 
-    testDict.reset();
+    expect(filteredWords.length).toBe(0); // No words should match
+  });
 
-    expect(testDict["filteredData"].size).toBe(3);
-    expect(testDict["filteredData"].has("apple")).toBe(true);
-    expect(testDict["filteredData"].has("banana")).toBe(true);
-    expect(testDict["filteredData"].has("car")).toBe(true);
-    expect(testDict["filteredData"].has("elephant")).toBe(false);
+  it("should filter words that match all words using a regex", () => {
+    dictionarySimple.filter(/.*/); // This regex matches everything
+    const filteredWords = dictionarySimple.getArray();
+
+    expect(filteredWords.length).toBe(5); // All words should match
+    expect(filteredWords).toContain("apple");
+    expect(filteredWords).toContain("banana");
+    expect(filteredWords).toContain("carrot");
+    expect(filteredWords).toContain("date");
+    expect(filteredWords).toContain("elephant");
+  });
+
+  it("should filter words with a more complex regex pattern", () => {
+    dictionarySimple.filter(/a.*t$/); // Words that contain 'a' and end with 't'
+    const filteredWords = dictionarySimple.getArray();
+
+    expect(filteredWords.length).toBe(2);
+    expect(filteredWords).toContain("carrot"); // carrot matches
+    expect(filteredWords).toContain("elephant"); // elephant matches
+    expect(filteredWords).not.toContain("apple");
+    expect(filteredWords).not.toContain("banana");
+  });
+
+  it("should filter words that match words with length constraints", () => {
+    dictionarySimple.filter(/^.{5}$/); // Words that are exactly 5 characters long
+    const filteredWords = dictionarySimple.getArray();
+
+    expect(filteredWords.length).toBe(1);
+    expect(filteredWords).toContain("apple"); // 'apple' is 5 letters
+    expect(filteredWords).not.toContain("banana");
+    expect(filteredWords).not.toContain("carrot");
+    expect(filteredWords).not.toContain("date");
+    expect(filteredWords).not.toContain("elephant");
   });
 });
