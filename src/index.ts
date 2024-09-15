@@ -7,5 +7,5 @@ const dictionary = new Dictionary({
   includeDataFromDatasets: true
 });
 
-const words = dictionary.wordsByTags(["verb"]);
+const words = dictionary.wordsByTags(["weapon"]);
 console.log(words);
