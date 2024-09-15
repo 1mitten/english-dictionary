@@ -4,10 +4,11 @@ const dictionary = new Dictionary({
   wordMinLength: 5,
   wordMaxLength: 7,
   maskWordInDescription: "*",
-  includeDataFromDatasets: true
+  includeDataFromDatasets: true,
+  loadCluesDataset: true
 });
 
-const words = dictionary.exportToJson();
+const words = dictionary.wordsWithClues();
 
 console.log(words);
 console.log(words.length)

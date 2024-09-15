@@ -17,12 +17,14 @@ export type Options = {
   wordMinLength: number;
   wordMaxLength: number;
   includeDataFromDatasets?: boolean;
+  loadCluesDataset?: boolean;
 };
 
 const defaultOptions: Options = {
   wordMinLength: 3,
   wordMaxLength: 50,
   includeDataFromDatasets: true,
+  loadCluesDataset: true,
 };
 
 export class Dictionary {
@@ -48,11 +50,13 @@ export class Dictionary {
     const datasetData = datasetLoader.loadDatasets();
     this.data = new Map([...this.data, ...datasetData]);
 
-    this.loadClueDatasets([
-      clues_four.clues,
-      clues_five.clues,
-      clues_six.clues,
-    ]);
+    if (this.options.loadCluesDataset) {
+      this.loadClueDatasets([
+        clues_four.clues,
+        clues_five.clues,
+        clues_six.clues,
+      ]);
+    }
 
     if (options?.maskWordInDescription) {
       this.maskWordsInDescriptions(options.maskWordInDescription);
@@ -203,16 +207,15 @@ export class Dictionary {
 
   public wordsWithClues(): WordDescription[] {
     const wordsWithClues: WordDescription[] = [];
-  
+
     this.data.forEach((wordDescription) => {
       if (wordDescription.clues && wordDescription.clues.length > 0) {
         wordsWithClues.push(wordDescription);
       }
     });
-  
+
     return wordsWithClues;
   }
-  
 
   public wordsByTags(
     tags: string[],
