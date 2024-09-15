@@ -161,24 +161,7 @@ describe("Dictionary", () => {
 
     expect(result).toBe(true);
   });
-  it("should return words with all matching tags when matchAll is true", () => {
-    const words = dictionary.wordsByTags(["vegetable"], true);
 
-    let result = true;
-
-    for (const word of words) {
-      if (
-        !word.tags ||
-        word.tags.length === 0 ||
-        !word.tags.includes("vegetable")
-      ) {
-        result = false;
-        break;
-      }
-
-      expect(result).toBe(true);
-    }
-  });
   it("should export data as a JSON string", () => {
 
     const result = dictionarySimple.exportToJsonString();
@@ -278,4 +261,65 @@ describe("Dictionary", () => {
     // These might or might not be equal since it's random, so we allow the possibility of difference.
     expect(firstSet).not.toEqual(secondSet);
   });
+
+  it("should return words with all matching tags when matchAll is true", () => {
+    const words = dictionary.wordsByTags(["vegetable"], true);
+
+    let result = true;
+
+    for (const word of words) {
+      if (
+        !word.tags ||
+        word.tags.length === 0 ||
+        !word.tags.includes("vegetable")
+      ) {
+        result = false;
+        break;
+      }
+
+      expect(result).toBe(true);
+    }
+  });
+  it('should return words that match all specified tags when matchAll is true', () => {
+    const result = dictionarySimple.wordsByTags(['fruit', 'food'], true);
+console.log(dictionarySimple);
+    expect(result.length).toBe(1); // Only "apple" has both 'fruit' and 'food' tags
+    expect(result[0].word).toBe('apple');
+  });
+
+  it('should return words that match at least one of the specified tags when matchAll is false', () => {
+    const result = dictionarySimple.wordsByTags(['fruit', 'food'], false);
+
+    expect(result.length).toBe(2); // "apple", "banana", and "carrot" match either 'fruit' or 'food'
+    const resultWords = result.map(wordDesc => wordDesc.word);
+    expect(resultWords).toContain('apple');
+    expect(resultWords).toContain('banana');
+  });
+
+  it('should return an empty array if no words match the specified tags', () => {
+    const result = dictionarySimple.wordsByTags(['nonexistent'], true);
+
+    expect(result.length).toBe(0); // No words have the 'nonexistent' tag
+  });
+
+  it('should return words without considering tags if matchAll is true but no tags are provided', () => {
+    const result = dictionarySimple.wordsByTags([], true);
+
+    expect(result.length).toBe(0); // No tags are provided, so nothing should match
+  });
+
+  it('should return an empty array if no tags are provided and matchAll is false', () => {
+    const result = dictionarySimple.wordsByTags([], false);
+
+    expect(result.length).toBe(0); // No tags are provided, so nothing should match
+  });
+
+  // it('should exclude words without tags from the result', () => {
+  //   const result = dictionarySimple.wordsByTags(['fruit'], false);
+
+  //   const resultWords = result.map(wordDesc => wordDesc.word);
+  //   expect(resultWords).toContain('apple');
+  //   expect(resultWords).toContain('banana');
+  //   expect(resultWords).not.toContain('date'); // "date" has no tags
+  // });
 });

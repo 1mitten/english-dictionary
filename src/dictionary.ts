@@ -224,34 +224,31 @@ export class Dictionary {
     matchAll: boolean = true
   ): WordDescription[] {
     const taggedWords: WordDescription[] = [];
-
+    if(!tags || tags.length === 0) return taggedWords;
+  
     // Iterate through the data Map and filter words by tags
     this.data.forEach((wordDescription) => {
       if (wordDescription.tags) {
         if (matchAll) {
-          // Check if word contains all tags (prefix match)
-          if (
-            tags.every((tag) =>
-              wordDescription.tags!.some((wordTag) => wordTag.startsWith(tag))
-            )
-          ) {
+          // Check if word contains all specified tags (exact match)
+          const hasAllTags = tags.every(tag => wordDescription.tags!.includes(tag));
+          if (hasAllTags) {
             taggedWords.push(wordDescription);
           }
         } else {
-          // Check if word contains at least one of the tags (prefix match)
-          if (
-            tags.some((tag) =>
-              wordDescription.tags!.some((wordTag) => wordTag.startsWith(tag))
-            )
-          ) {
+          // Check if word contains at least one of the specified tags (exact match)
+          const hasAnyTag = tags.some(tag => wordDescription.tags!.includes(tag));
+          if (hasAnyTag) {
             taggedWords.push(wordDescription);
           }
         }
       }
     });
-
+  
     return taggedWords;
   }
+  
+  
 
   public exportToJsonString(): string {
     const dataObject = Object.fromEntries(this.data);
