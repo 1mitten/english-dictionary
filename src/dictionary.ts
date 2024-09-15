@@ -3,23 +3,12 @@ import clues_five from "./data/clues_five.json";
 import clues_four from "./data/clues_four.json";
 import clues_six from "./data/clues_six.json";
 import { DatasetLoader } from "./DatasetLoader"; // Import the DatasetLoader class
+import { WordDescription } from "./types/WordDescription.type";
+import { Options } from "./types/Options.type";
 
-export type WordDescription = {
-  word: string;
-  description: string;
-  isDictionaryWord: boolean;
-  clues?: string[];
-  tags?: string[];
-};
-
-export type Options = {
-  maskWordInDescription?: string;
-  wordMinLength: number;
-  wordMaxLength: number;
-  includeDataFromDatasets?: boolean;
-  loadCluesDataset?: boolean;
-};
-
+/**
+ *  Reasonable default settings here
+ */
 const defaultOptions: Options = {
   wordMinLength: 3,
   wordMaxLength: 50,
@@ -27,6 +16,10 @@ const defaultOptions: Options = {
   loadCluesDataset: true,
 };
 
+/**
+ * Main class for containing Dictionary data and related functionality,
+ * constructor will load up default dictionary for us
+ */
 export class Dictionary {
   private data: Map<string, WordDescription>;
   private filteredData: Map<string, WordDescription>;
@@ -70,7 +63,11 @@ export class Dictionary {
     );
   }
 
-  // Transform raw data into WordDescription objects
+  /**
+   * This is function to clean up any words in terms of casing or characters such as hypthen
+   * @param jsonData 
+   * @returns 
+   */
   private transformData(jsonData: Record<string, string>): WordDescription[] {
     return Object.entries(jsonData).map(([word, description]) => ({
       word: word.toLowerCase().replace(/-/g, ""),
@@ -79,13 +76,20 @@ export class Dictionary {
     }));
   }
 
-  // Load words into the data map
+  /**
+   * For an array of WordDescriptions to be loaded
+   * @param wordDescriptions 
+   */
   private loadWords(wordDescriptions: WordDescription[]): void {
     wordDescriptions.forEach(({ word, description, tags }) => {
       this.data.set(word, { word, description, tags, isDictionaryWord: true });
     });
   }
-  // Mask words in their descriptions
+  /**
+   * This is used to mask any descriptions containing the word using the maskChar
+   * Suitable for gaming / guessing or quizzes for example, can be set in options
+   * @param maskChar 
+   */
   private maskWordsInDescriptions(maskChar: string): void {
     this.data.forEach((wordDescription, word) => {
       const regex = new RegExp(`\\b${word}\\b`, "gi");
@@ -97,7 +101,12 @@ export class Dictionary {
     });
   }
 
-  // Filter by word length range
+  /**
+   * For filtering based on the length of the word to help reduce the subset
+   * @param min 
+   * @param max 
+   * @returns 
+   */
   private filterByLengthRange(
     min: number,
     max: number
@@ -114,26 +123,36 @@ export class Dictionary {
     return filteredMap;
   }
 
-  // Load multiple clue datasets at once
+  /**
+   * Load the clue datasets for gamifying purposes
+   * @param clueDatasets 
+   */
   private loadClueDatasets(clueDatasets: { [word: string]: string[] }[]): void {
     clueDatasets.forEach((clueData) => {
       this.loadClues(clueData);
     });
   }
 
-  // Load clues for specific words
+  /**
+   * How the clue data is loaded in, which exists on it's own property
+   * @param clueData 
+   */
   public loadClues(clueData: { [word: string]: string[] }): void {
     Object.entries(clueData).forEach(([word, clues]) => {
       const normalizedWord = word.toLowerCase();
       const wordDescription = this.data.get(normalizedWord);
       if (wordDescription) {
-        wordDescription.clues = clues; // Add the array of clues to the word
-        this.data.set(normalizedWord, wordDescription); // Update the data
+        wordDescription.clues = clues;
+        this.data.set(normalizedWord, wordDescription);
       }
     });
   }
 
-  // Search and filtering functions
+  /**
+   * For regex functionality!, remember to call get() after
+   * @param regex 
+   * @returns 
+   */
   public filter(regex: RegExp): this {
     this.filteredData = new Map<string, WordDescription>();
     this.data.forEach((wordDescription) => {
@@ -144,35 +163,60 @@ export class Dictionary {
     return this;
   }
 
+  /**
+   * For finding a single word
+   * @param word 
+   * @returns 
+   */
   public find(word: string): WordDescription | undefined {
     if (!word) return;
     return this.data.get(word.toLowerCase());
   }
 
+  /**
+   * For finding multiples at once
+   * @param words
+   * @returns 
+   */
   public findMany(words: string[]): WordDescription[] {
     return words
       .map((word) => this.find(word))
       .filter((wordDesc): wordDesc is WordDescription => !!wordDesc);
   }
 
-  // Retrieve filtered data
+  /**
+   * Chain method to be called
+   * @returns 
+   */
   public get(): WordDescription[] {
     return Array.from(this.filteredData.values());
   }
 
+  /**
+   * If you need the keys based on array, ideally for a list of string[] words..
+   * @returns 
+   */
   public getArray(): string[] {
     return Array.from(this.filteredData.keys());
   }
 
-  // Random word retrieval
+  /**
+   * Retrieve random words for gaming purposes maybe or testing
+   * @param count 
+   * @returns 
+   */
   public getRandomWords(count: number): WordDescription[] {
     const words = Array.from(this.filteredData.values());
     const shuffled = [...words].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
   }
 
-  // Filter by prefix, suffix, or substring
-  public wordsByPrefix(prefix: string): this {
+  /**
+   * Filter words by prefix, IE pra will return pray, prayer, prat etc
+   * @param prefix
+   * @returns 
+   */
+  public findByPrefix(prefix: string): this {
     this.filteredData = new Map();
     this.data.forEach((wordDescription) => {
       if (wordDescription.word.startsWith(prefix.toLowerCase())) {
@@ -182,7 +226,12 @@ export class Dictionary {
     return this;
   }
 
-  public wordsBySuffix(suffix: string): this {
+  /**
+   * Filter words by suffix, For example ing will return returning, praying, running etc
+   * @param suffix 
+   * @returns 
+   */
+  public findBySuffix(suffix: string): this {
     this.filteredData = new Map();
     this.data.forEach((wordDescription) => {
       if (wordDescription.word.endsWith(suffix.toLowerCase())) {
@@ -191,8 +240,12 @@ export class Dictionary {
     });
     return this;
   }
-
-  public wordsBySubstring(substring: string): this {
+  /**
+   * Filter words by a substring, For example pot will return pot, spot and spotty
+   * @param substring 
+   * @returns 
+   */
+  public findBySubstring(substring: string): this {
     this.filteredData = new Map();
     this.data.forEach((wordDescription) => {
       if (wordDescription.word.includes(substring.toLowerCase())) {
@@ -202,12 +255,22 @@ export class Dictionary {
     return this;
   }
 
-  public wordsByLengthRange(min: number, max: number): this {
+  /**
+   * Used to filter words based on their length range
+   * @param min 
+   * @param max 
+   * @returns 
+   */
+  public findByWordLengthRange(min: number, max: number): this {
     this.filteredData = this.filterByLengthRange(min, max);
     return this;
   }
 
-  public wordsWithClues(): WordDescription[] {
+  /**
+   * Grabs all of the words with clues associated
+   * @returns 
+   */
+  public findWordsWithClues(): WordDescription[] {
     const wordsWithClues: WordDescription[] = [];
 
     this.data.forEach((wordDescription) => {
@@ -219,7 +282,13 @@ export class Dictionary {
     return wordsWithClues;
   }
 
-  public wordsByTags(
+  /**
+   * Grabs the words by an array of tags
+   * @param tags An array of tags
+   * @param matchAll If set to true, will enforce AND but if set to false will enforce an OR 
+   * @returns 
+   */
+  public findWordsByTags(
     tags: string[],
     matchAll: boolean = true
   ): WordDescription[] {
@@ -249,14 +318,20 @@ export class Dictionary {
   }
   
   
-
+  /**
+   * Basic function for stringifying data for exporting purposes
+   * @returns stringified JSON
+   */
   public exportToJsonString(): string {
     const dataObject = Object.fromEntries(this.data);
     const jsonString = JSON.stringify(dataObject, null, 2);
     return jsonString;
   }
 
-  // Reset filtering
+  /**
+   * Reset the filtering
+   * @returns 
+   */
   public reset(): this {
     this.filteredData = this.filterByLengthRange(
       this.options.wordMinLength,

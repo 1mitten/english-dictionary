@@ -1,5 +1,5 @@
 import { DatasetLoader } from './DatasetLoader';
-import { WordDescription } from './Dictionary';
+import { WordDescription } from "./types/WordDescription.type";
 
 describe('DatasetLoader', () => {
   let datasetLoader: DatasetLoader;

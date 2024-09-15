@@ -20,17 +20,19 @@ import vegetables from "./data/vegetables.json";
 import verbs from "./data/verbs.json";
 import vehicles from "./data/vehicles.json";
 import old_weapons from "./data/old_weapons.json";
-import { WordDescription } from "./Dictionary";
+import { WordDescription } from "./types/WordDescription.type";
 
 type DatasetConfig = {
   [key: string]: { data: any; tags: string[] };
 };
 
+/**
+ * Used to handle the loading of datasets into dictionary
+ */
 export class DatasetLoader {
   private datasetConfig: DatasetConfig;
 
   constructor() {
-    // Define the dataset configurations without specifying the exact data type
     this.datasetConfig = {
       adjectives: { data: adjectives.words, tags: ["adjective"] },
       animals: { data: animals.words, tags: ["animal"] },
@@ -45,7 +47,7 @@ export class DatasetLoader {
         data: musical_instruments.words,
         tags: ["music:instruments"],
       },
-      old_weapons: { data: old_weapons.data, tags: ["weapons:old"] },
+      old_weapons: { data: old_weapons.data, tags: ["weapon:old"] },
       objects: { data: objects.words, tags: ["object"] },
       passages: { data: passages.words, tags: ["passage"] },
       nouns: { data: nouns.words, tags: ["noun"] },
@@ -63,7 +65,10 @@ export class DatasetLoader {
     };
   }
 
-  // Load all datasets into a dictionary
+  /**
+   * Loads all datasets and applies tagging
+   * @returns 
+   */
   public loadDatasets(): Map<string, WordDescription> {
     const data = new Map<string, WordDescription>();
 
@@ -75,7 +80,12 @@ export class DatasetLoader {
     return data;
   }
 
-  // Dynamically apply tags based on the data structure (arrays, objects, etc.)
+  /**
+   *  Dynamically apply tags based on the data structure (arrays, objects, etc.)
+   * @param words 
+   * @param baseTags 
+   * @param dictionary 
+   */
   public applyTagsToWords(
     words: any, // Any type of dataset
     baseTags: string[],
@@ -116,6 +126,12 @@ export class DatasetLoader {
     }
   }
 
+  /**
+   * Used to merge tags into dictionary and also handles additional words
+   * @param word 
+   * @param tags 
+   * @param dictionary 
+   */
   private addWordToDictionary(
     word: string,
     tags: string[],

@@ -1,5 +1,6 @@
 import { DatasetLoader } from "./DatasetLoader";
-import { Dictionary, WordDescription } from "./Dictionary";
+import { Dictionary } from "./Dictionary";
+import { WordDescription } from "./types/WordDescription.type";
 import dictionaryData from "./data/dictionary_compact.json";
 
 describe("Dictionary", () => {
@@ -89,35 +90,35 @@ describe("Dictionary", () => {
     expect(result).toBeUndefined();
   });
   it("should return all of the 5 letter words from the dictionary without descriptions", () => {
-    const result = dictionary.wordsByLengthRange(5, 5).get();
+    const result = dictionary.findByWordLengthRange(5, 5).get();
     expect(result.length).toBeGreaterThan(100);
   });
 
   it("should return all of the 5 letter words from the dictionary with descriptions", () => {
-    const result = dictionary.wordsByLengthRange(5, 5).get();
+    const result = dictionary.findByWordLengthRange(5, 5).get();
     expect(result[0].word.length).toBeGreaterThan(0);
     expect(result.length).toBeGreaterThan(100);
   });
 
   it("should return words by length range", () => {
-    const result = dictionary.wordsByLengthRange(3, 5).get();
+    const result = dictionary.findByWordLengthRange(3, 5).get();
     expect(
       result.every((word) => word.word.length >= 3 && word.word.length <= 5)
     ).toBe(true);
   });
 
   it("should return words by a prefix", () => {
-    const result = dictionary.wordsByPrefix("pre").get();
+    const result = dictionary.findByPrefix("pre").get();
     expect(result.every((word) => word.word.startsWith("pre"))).toBe(true);
   });
 
   it("should return words by a suffix", () => {
-    const result = dictionary.wordsBySuffix("ing").get();
+    const result = dictionary.findBySuffix("ing").get();
     expect(result.every((word) => word.word.endsWith("ing"))).toBe(true);
   });
 
   it("should return words by a substring", () => {
-    const result = dictionary.wordsBySubstring("cat").get();
+    const result = dictionary.findBySubstring("cat").get();
     expect(result.every((word) => word.word.includes("cat"))).toBe(true);
   });
 
@@ -148,7 +149,7 @@ describe("Dictionary", () => {
     expect(word?.description).toEqual(expected);
   });
   it("should return words that have clues", () => {
-    const words = dictionary.wordsWithClues();
+    const words = dictionary.findWordsWithClues();
 
     let result = true;
 
@@ -263,7 +264,7 @@ describe("Dictionary", () => {
   });
 
   it("should return words with all matching tags when matchAll is true", () => {
-    const words = dictionary.wordsByTags(["vegetable"], true);
+    const words = dictionary.findWordsByTags(["vegetable"], true);
 
     let result = true;
 
@@ -281,35 +282,36 @@ describe("Dictionary", () => {
     }
   });
   it('should return words that match all specified tags when matchAll is true', () => {
-    const result = dictionarySimple.wordsByTags(['fruit', 'food'], true);
+    const result = dictionarySimple.findWordsByTags(['fruit', 'food'], true);
 console.log(dictionarySimple);
     expect(result.length).toBe(1); // Only "apple" has both 'fruit' and 'food' tags
     expect(result[0].word).toBe('apple');
   });
 
   it('should return words that match at least one of the specified tags when matchAll is false', () => {
-    const result = dictionarySimple.wordsByTags(['fruit', 'food'], false);
+    const result = dictionarySimple.findWordsByTags(['fruit', 'food'], false);
 
-    expect(result.length).toBe(2); // "apple", "banana", and "carrot" match either 'fruit' or 'food'
+    expect(result.length).toBe(2); 
     const resultWords = result.map(wordDesc => wordDesc.word);
     expect(resultWords).toContain('apple');
     expect(resultWords).toContain('banana');
   });
 
-  it('should return an empty array if no words match the specified tags', () => {
-    const result = dictionarySimple.wordsByTags(['nonexistent'], true);
 
-    expect(result.length).toBe(0); // No words have the 'nonexistent' tag
+  it('should return an empty array if no words match the specified tags', () => {
+    const result = dictionarySimple.findWordsByTags(['nonexistent'], true);
+
+    expect(result.length).toBe(0); 
   });
 
   it('should return words without considering tags if matchAll is true but no tags are provided', () => {
-    const result = dictionarySimple.wordsByTags([], true);
+    const result = dictionarySimple.findWordsByTags([], true);
 
-    expect(result.length).toBe(0); // No tags are provided, so nothing should match
+    expect(result.length).toBe(0);
   });
 
   it('should return an empty array if no tags are provided and matchAll is false', () => {
-    const result = dictionarySimple.wordsByTags([], false);
+    const result = dictionarySimple.findWordsByTags([], false);
 
     expect(result.length).toBe(0); // No tags are provided, so nothing should match
   });
