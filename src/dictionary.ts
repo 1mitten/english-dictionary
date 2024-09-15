@@ -14,18 +14,25 @@ export type WordDescription = {
 
 export type Options = {
   maskWordInDescription?: string;
-  wordMinLength?: number;
-  wordMaxLength?: number;
+  wordMinLength: number;
+  wordMaxLength: number;
   includeDataFromDatasets?: boolean;
+};
+
+const defaultOptions: Options = {
+  wordMinLength: 3,
+  wordMaxLength: 50,
+  includeDataFromDatasets: true,
 };
 
 export class Dictionary {
   private data: Map<string, WordDescription>;
   private filteredData: Map<string, WordDescription>;
-  private static readonly MIN_WORD_LENGTH = 3;
-  private static readonly MAX_WORD_LENGTH = 50;
 
-  constructor(public options?: Options, public words?: WordDescription[]) {
+  constructor(
+    public options: Options = defaultOptions,
+    public words?: WordDescription[]
+  ) {
     this.data = new Map();
     this.filteredData = new Map();
 
@@ -51,9 +58,10 @@ export class Dictionary {
       this.maskWordsInDescriptions(options.maskWordInDescription);
     }
 
-    const minLength = options?.wordMinLength ?? Dictionary.MIN_WORD_LENGTH;
-    const maxLength = options?.wordMaxLength ?? Dictionary.MAX_WORD_LENGTH;
-    this.filteredData = this.filterByLengthRange(minLength, maxLength);
+    this.filteredData = this.filterByLengthRange(
+      this.options.wordMinLength,
+      this.options.wordMaxLength
+    );
   }
 
   // Transform raw data into WordDescription objects
@@ -229,9 +237,10 @@ export class Dictionary {
 
   // Reset filtering
   public reset(): this {
-    const minLength = this.options?.wordMinLength ?? Dictionary.MIN_WORD_LENGTH;
-    const maxLength = this.options?.wordMaxLength ?? Dictionary.MAX_WORD_LENGTH;
-    this.filteredData = this.filterByLengthRange(minLength, maxLength);
+    this.filteredData = this.filterByLengthRange(
+      this.options.wordMinLength,
+      this.options.wordMaxLength
+    );
     return this;
   }
 }
