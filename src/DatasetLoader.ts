@@ -21,6 +21,8 @@ import verbs from "./data/core/verbs.json";
 import vehicles from "./data/core/vehicles.json";
 import old_weapons from "./data/core/old_weapons.json";
 import { WordMetadata } from "./types/WordMetadata.type";
+import fs from "fs";
+import path from "path";
 
 type DatasetConfig = {
   [key: string]: { data: any; tags: string[] };
@@ -30,39 +32,43 @@ type DatasetConfig = {
  * Used to handle the loading of datasets into dictionary
  */
 export class DatasetLoader {
-  private datasetConfig: DatasetConfig;
+  private datasetConfig: DatasetConfig = {};
 
   constructor() {
-    this.datasetConfig = {
-      adjectives: { data: adjectives.words, tags: ["adjective"] },
-      animals: { data: animals.words, tags: ["animal"] },
-      common: { data: common.words, tags: ["common"] },
-      containers: { data: containers.words, tags: ["container"] },
-      countries: { data: countries.words, tags: ["country"] },
-      clothing: { data: clothing.words, tags: ["clothing"] },
-      fabrics: { data: fabrics.words, tags: ["fabric"] },
-      flowers: { data: flowers.words, tags: ["flower"] },
-      monsters: { data: monsters.words, tags: ["monster"] },
-      musical_instruments: {
-        data: musical_instruments.words,
-        tags: ["music:instruments"],
-      },
-      old_weapons: { data: old_weapons.data, tags: ["weapon:old"] },
-      objects: { data: objects.words, tags: ["object"] },
-      passages: { data: passages.words, tags: ["passage"] },
-      nouns: { data: nouns.words, tags: ["noun"] },
-      adverbs: { data: adverbs.words, tags: ["adverb"] },
-      stopwords: { data: stopwords.words, tags: ["stopword"] },
-      moods: { data: moods.words, tags: ["mood"] },
-      body_parts: {
-        data: body_parts.words,
-        tags: ["body", "human", "anatomy"],
-      },
-      rooms: { data: rooms.words, tags: ["room", "place"] },
-      vegetables: { data: vegetables.words, tags: ["vegetable", "food"] },
-      vehicles: { data: vehicles.words, tags: ["vehicle", "transport"] },
-      verbs: { data: verbs.words, tags: ["verb"] },
-    };
+    const dataPath = path.join(__dirname, 'data', 'core');
+    this.loadDatasetsFromDirectory(dataPath) // Specify the directory where your JSON files are
+  }
+
+  /**
+   * Load all JSON files from the given directory and infer tags from each file's content.
+   * Assumes each JSON file contains a "tags" property and a "words" property.
+   */
+  private loadDatasetsFromDirectory(directoryPath: string): void {
+    const files = fs.readdirSync(directoryPath);
+
+    files.forEach((file) => {
+      if (path.extname(file) === ".json") {
+        const filePath = path.join(directoryPath, file);
+        const dataset = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+        if (dataset.tags && dataset.words) {
+          this.datasetConfig[file] = {
+            data: dataset.words,
+            tags: Array.isArray(dataset.tags) ? dataset.tags : [dataset.tags], // Ensure tags are an array
+          };
+        } else {
+          console.warn(
+            `Invalid JSON format in file ${file}. Expected 'tags' and 'words' properties.`
+          );
+        }
+      }
+    });
+  }
+
+  /**
+   * Get the dataset config after loading.
+   */
+  public getDatasetConfig(): DatasetConfig {
+    return this.datasetConfig;
   }
 
   /**
@@ -150,7 +156,5 @@ export class DatasetLoader {
         tags,
       });
     }
-
-
   }
 }

@@ -1,5 +1,6 @@
 {
   "description": "English stop words",
+  "tags": ["stopword"],
   "words":
     [
       "'ll",
