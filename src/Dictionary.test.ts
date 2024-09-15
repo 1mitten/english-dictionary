@@ -11,7 +11,7 @@ describe("Dictionary", () => {
     {
       word: "apple",
       description: "A fruit",
-      clues: ["It can be red or green"],
+      clues: ["It can be red or green, a fruit"],
       tags: ["fruit", "food"],
       isDictionaryWord: true,
     },
@@ -311,6 +311,16 @@ describe("Dictionary", () => {
   it('should return an empty array if no tags are provided and matchAll is false', () => {
     const result = dictionarySimple.findWordsByTags([], false);
 
-    expect(result.length).toBe(0); // No tags are provided, so nothing should match
+    expect(result.length).toBe(0); 
+  });
+
+  it('should return words with descriptions containing the search text', () => {
+    const result = dictionarySimple.findByDescription('fruit');
+    expect(result.length).toBe(3); 
+  });
+
+  it('should return an empty array if no descriptions match the search text', () => {
+    const result = dictionary.findByDescription('crazy stuff');
+    expect(result.length).toBe(0);
   });
 });

@@ -7,7 +7,7 @@ describe("DatasetLoader", () => {
   let dictionary: Map<string, WordMetadata>;
 
   const datasetsPath = path.resolve(process.cwd(), 'src', 'data', 'core');
- // const datasetsPath = path.join(__dirname, 'data', 'core');
+
   beforeAll(() => {
     datasetLoader = new DatasetLoader(datasetsPath);
   });
@@ -120,4 +120,5 @@ describe("DatasetLoader", () => {
 
     expect(dictionary.get("accepted")?.tags?.includes("verb:past")).toBe(true);
   });
+
 });

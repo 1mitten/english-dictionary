@@ -230,6 +230,18 @@ export class Dictionary {
   }
 
   /**
+   * Find by description
+   * @param text 
+   * @returns 
+   */
+  public findByDescription(text: string): WordMetadata[] {
+    // Return the filtered results based on the description containing the text
+    return Array.from(this.data.values()).filter(word =>
+      word.description.toLowerCase().includes(text.toLowerCase())
+    );
+  }
+
+  /**
    * Filter words by prefix, IE 'pra' will return pray, prayer and prat.
    * @param prefix
    * @returns this for chaining
