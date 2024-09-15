@@ -17,7 +17,8 @@
     "start": "ts-node src/index.ts",
     "clean": "rimraf dist",
     "test": "jest --coverage",
-    "test:watch": "jest --watchAll"
+    "test:watch": "jest --watchAll",
+    "prepare": "npm run build"
   },
   "author": "",
   "license": "ISC",
