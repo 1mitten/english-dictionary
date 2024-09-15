@@ -19,6 +19,7 @@ import fabrics from "./data/fabrics.json";
 import vegetables from "./data/vegetables.json";
 import verbs from "./data/verbs.json";
 import vehicles from "./data/vehicles.json";
+import old_weapons from "./data/old_weapons.json";
 import { WordDescription } from "./Dictionary";
 
 // More flexible DatasetConfig type without enforcing a rigid schema
@@ -45,6 +46,7 @@ export class DatasetLoader {
         data: musical_instruments.words,
         tags: ["music:instruments"],
       },
+      old_weapons: { data: old_weapons.data, tags: ["weapons:old"] },
       objects: { data: objects.words, tags: ["object"] },
       passages: { data: passages.words, tags: ["passage"] },
       nouns: { data: nouns.words, tags: ["noun"] },
@@ -62,7 +64,7 @@ export class DatasetLoader {
     };
   }
 
-  // This method will dynamically handle various dataset types
+  // Load all datasets into a dictionary
   public loadDatasets(): Map<string, WordDescription> {
     const data = new Map<string, WordDescription>();
 
@@ -76,36 +78,37 @@ export class DatasetLoader {
 
   // Dynamically apply tags based on the data structure (arrays, objects, etc.)
   private applyTagsToWords(
-    words: any, // Allow any type of data here
+    words: any, // Any type of dataset
     baseTags: string[],
     dictionary: Map<string, WordDescription>
   ): void {
     if (Array.isArray(words)) {
-      words.forEach((entry) => {
-        if (typeof entry === "object" && entry !== null) {
-          // Handle complex object structures (e.g., verbs with "present" and "past")
-          Object.keys(entry).forEach((key) => {
-            const word = entry[key].toLowerCase();
-            const specificTag = `${baseTags[0]}:${key}`; // e.g., verb:present, verb:past
-            this.addWordToDictionary(word, [specificTag], dictionary);
-          });
-        } else if (typeof entry === "string") {
-          // Handle simple arrays of strings (e.g., nouns, adjectives)
-          const normalizedWord = entry.toLowerCase();
-          this.addWordToDictionary(normalizedWord, baseTags, dictionary);
+      // Handle simple arrays of strings (e.g., ["dog", "cat"])
+      words.forEach((word) => {
+        if (typeof word === "string") {
+          this.addWordToDictionary(word.toLowerCase(), baseTags, dictionary);
         }
       });
     } else if (typeof words === "object" && words !== null) {
-      // If words is a single object, apply tags dynamically based on its keys
-      // This assumption may need to change or be further flexible
+      // Iterate over object keys (e.g., { present: "accept", past: "accepted" })
       Object.keys(words).forEach((key) => {
-        const wordGroup = words[key];
-        if (Array.isArray(wordGroup)) {
-          wordGroup.forEach((word) => {
-            const normalizedWord = word.toLowerCase();
+        const word = words[key];
+
+        if (typeof word === "string") {
+          // Handle key-value pairs where the value is a string (e.g., { present: "accept" })
+          const specificTag = `${baseTags[0]}:${key}`; // E.g., verb:present or verb:past
+          this.addWordToDictionary(
+            word.toLowerCase(),
+            [specificTag],
+            dictionary
+          );
+        } else if (Array.isArray(word)) {
+          // Handle cases where the value is an array (e.g., { melee: ["sword", "dagger"] })
+          const specificTag = `${baseTags[0]}:${key}`; // E.g., weapons:old:melee
+          word.forEach((item: string) => {
             this.addWordToDictionary(
-              normalizedWord,
-              [`${baseTags[0]}:${key}`],
+              item.toLowerCase(),
+              [specificTag],
               dictionary
             );
           });
@@ -114,7 +117,6 @@ export class DatasetLoader {
     }
   }
 
-  // Helper function to add words to the dictionary with appropriate tags
   private addWordToDictionary(
     word: string,
     tags: string[],
@@ -122,11 +124,11 @@ export class DatasetLoader {
   ): void {
     const existingWord = dictionary.get(word);
     if (existingWord) {
-      // If the word exists, merge the tags
+      // If the word already exists, merge the tags
       existingWord.tags = [...(existingWord.tags || []), ...tags];
       dictionary.set(word, existingWord);
     } else {
-      // Otherwise, create a new word entry in the dictionary
+      // Otherwise, create a new entry for the word in the dictionary
       dictionary.set(word, {
         word,
         description: `Tagged with ${tags.join(", ")}`,
