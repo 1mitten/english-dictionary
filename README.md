@@ -4,40 +4,74 @@
 
 [english-dictionary](../../README.md) / [Dictionary](../README.md) / Dictionary
 
-# Class: Dictionary
+# Dictionary
 
 Creating a default instance will load an existing English Dictionary with descriptions,
 Datasets are preloaded that tag the dictionary against existing words.
 
+<h5>Create new instance and perform a simple word find</h5>
+
 ```ts
-Note: Case insensitive, everything is lowercased
-
-const dictionary = new Dictionary() 
-
-dictionary.find('monkey')                   // Simple lookup, 
-dictionary.findMany(['ApPle','MONKEY'])     // Multiple lookup
-dictionary.findByPrefix('pre').get()        // can be chained, uses in memory filtered data
-dictionary.findBySubstring('pot').get()     // can be chained, uses in memory filtered data
-dictionary.findBySuffix('ing').get()        // can be chained, uses in memory filtered data
-dictionary.findByWordLengthRange(3,5).get() // can be chained, The min and max length of the words
-
-// example chain
-dictionary.findBySuffix('ing').findByWordLengthRange(1,5).get();
-
-
-dictionary.reset()                          // reset the filtered data
-// Accepts multiple tags    default:true sets to AND behaviour, false to OR behaviour
-dictionary.findWordsByTags(['objects','animals'],true)
-
-['verb','noun','adjectives','adverbs',
-'common','stopwords',
-'objects','vehicles','animals','weapon','fabrics','flower','passages','rooms','vegetables'] are some examples
-
-'countries' is also included by default
-
+const dictionary = new Dictionary();
+dictionary.find('cat')
 ```
 
+Returns
+```json
+{
+  word: 'cat',
+  description: 'Tagged with animal',
+  isDictionaryWord: false,
+  tags: [ 'animal', 'common', 'object' ]
+}
+```
 
+<h5>Multiple Lookup for words</h5>
+
+```ts
+dictionary.findMany(['apple','cat']);
+```
+
+<h5>Find by multiple tags, true = AND behaviour, false = OR behaviour</h5>
+
+```ts
+dictionary.findWordsByTags(['objects','animals'],true);
+```
+
+<h5>By Prefix (chainable)<h5>
+
+```ts
+dictionary.findByPrefix('pre').get();
+```
+
+<h5>Substring (chainable)</h5>
+
+```ts
+dictionary.findBySubstring('pot').get()  
+```
+
+<h5>Suffix  (chainable)</h5>
+
+```ts
+dictionary.findBySuffix('ing').get()        // can be chained, uses in memory filtered data
+```
+
+<h5>Chainable methods</h5>
+
+```ts
+dictionary.findBySuffix('ing').findByWordLengthRange(1,5).get();
+```
+
+<h6>Example Tags with default dataset</h5>
+
+```ts
+['verb','noun','adjectives','adverbs','common','stopwords','objects','vehicles','animals','weapon'
+,'fabrics','flower','passages','rooms','vegetables']
+
+'countries' is also included by default
+```
+
+<h5>Injecting your own data</h5>                 
 
 Creating an instance using your WordMetadata[] will require ```{ word, description }``` as a minimum, you can also send ```tags[]``` and ```clues[]```, 
 ```ts

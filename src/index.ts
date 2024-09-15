@@ -12,7 +12,7 @@ let words;
 
 
 
- words = dictionary.getRandomWords(3);
+ words = dictionary.find('monkey');
 
 console.log(words);
 

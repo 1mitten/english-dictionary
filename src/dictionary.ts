@@ -58,7 +58,7 @@ export class Dictionary {
 
     if (this.options.includeDataFromDatasets) {
       const datasetLoader = new DatasetLoader();
-      const datasetData = datasetLoader.loadDatasets();
+      const datasetData = datasetLoader.loadDatasets(this.data);
       this.data = new Map([...this.data, ...datasetData]);
     }
 

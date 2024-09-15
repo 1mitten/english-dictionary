@@ -69,9 +69,8 @@ export class DatasetLoader {
    * Loads all datasets and applies tagging
    * @returns 
    */
-  public loadDatasets(): Map<string, WordMetadata> {
-    const data = new Map<string, WordMetadata>();
-
+  public loadDatasets(data: Map<string, WordMetadata>): Map<string, WordMetadata> {
+  
     Object.keys(this.datasetConfig).forEach((datasetKey: string) => {
       const { data: words, tags } = this.datasetConfig[datasetKey];
       this.applyTagsToWords(words, tags, data);
@@ -137,19 +136,30 @@ export class DatasetLoader {
     tags: string[],
     dictionary: Map<string, WordMetadata>
   ): void {
+
+
     const existingWord = dictionary.get(word);
+    
     if (existingWord) {
-      // If the word already exists, merge the tags
-      existingWord.tags = [...(existingWord.tags || []), ...tags];
+ //     console.log(`Word '${word}' already exists. Current description: '${existingWord.description}'. Merging tags: ${tags.join(", ")}`);
+      // If the word already exists, merge the tags and retain the existing description
+      existingWord.tags = [...new Set([...(existingWord.tags || []), ...tags])]; // Ensure unique tags
       dictionary.set(word, existingWord);
     } else {
+      if(word === 'cat'){
+        console.log('WTF');
+        console.log(existingWord)
+        }
+ //     console.log(`Adding new word '${word}' with tags: ${tags.join(", ")}`);
       // Otherwise, create a new entry for the word in the dictionary
       dictionary.set(word, {
         word,
-        description: `Tagged with ${tags.join(", ")}`,
+        description: `Tagged with ${tags.join(", ")}`, // Set only if no description exists
         isDictionaryWord: false,
         tags,
       });
     }
   }
+  
+  
 }
