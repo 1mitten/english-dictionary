@@ -1,25 +1,25 @@
-import animals from "./data/animals.json";
-import common from "./data/common.json";
-import nouns from "./data/nouns.json";
-import adverbs from "./data/adverbs.json";
-import adjectives from "./data/adjectives.json";
-import stopwords from "./data/stopwords.json";
-import clothing from "./data/clothing.json";
-import containers from "./data/containers.json";
-import objects from "./data/objects.json";
-import moods from "./data/moods.json";
-import monsters from "./data/monsters.json";
-import body_parts from "./data/body_parts.json";
-import musical_instruments from "./data/musical_instruments.json";
-import countries from "./data/countries.json";
-import passages from "./data/passages.json";
-import rooms from "./data/rooms.json";
-import flowers from "./data/flowers.json";
-import fabrics from "./data/fabrics.json";
-import vegetables from "./data/vegetables.json";
-import verbs from "./data/verbs.json";
-import vehicles from "./data/vehicles.json";
-import old_weapons from "./data/old_weapons.json";
+import animals from "./data/core/animals.json";
+import common from "./data/core/common.json";
+import nouns from "./data/core/nouns.json";
+import adverbs from "./data/core/adverbs.json";
+import adjectives from "./data/core/adjectives.json";
+import stopwords from "./data/core/stopwords.json";
+import clothing from "./data/core/clothing.json";
+import containers from "./data/core/containers.json";
+import objects from "./data/core/objects.json";
+import moods from "./data/core/moods.json";
+import monsters from "./data/core/monsters.json";
+import body_parts from "./data/core/body_parts.json";
+import musical_instruments from "./data/core/musical_instruments.json";
+import countries from "./data/core/countries.json";
+import passages from "./data/core/passages.json";
+import rooms from "./data/core/rooms.json";
+import flowers from "./data/core/flowers.json";
+import fabrics from "./data/core/fabrics.json";
+import vegetables from "./data/core/vegetables.json";
+import verbs from "./data/core/verbs.json";
+import vehicles from "./data/core/vehicles.json";
+import old_weapons from "./data/core/old_weapons.json";
 import { WordMetadata } from "./types/WordMetadata.type";
 
 type DatasetConfig = {
@@ -61,7 +61,7 @@ export class DatasetLoader {
       rooms: { data: rooms.words, tags: ["room", "place"] },
       vegetables: { data: vegetables.words, tags: ["vegetable", "food"] },
       vehicles: { data: vehicles.words, tags: ["vehicle", "transport"] },
-      verbs: { data: verbs.verbs, tags: ["verb"] },
+      verbs: { data: verbs.words, tags: ["verb"] },
     };
   }
 

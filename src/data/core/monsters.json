@@ -1,5 +1,6 @@
 {
 	"description" : "A list of monsters and other mythic creatures",
+	"tags": ["monster"],
 	"words" : [
 		"angel",
 		"brownie",

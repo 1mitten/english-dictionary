@@ -1,5 +1,6 @@
 {
 	"description" : "A list of words that naturally complete the phrase 'They were feeling...'.",
+	"tags": ["mood"],
 	"words" :
 	[
 		"abandoned",

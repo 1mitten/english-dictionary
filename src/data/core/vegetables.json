@@ -1,5 +1,6 @@
 {
     "description": "A list of vegetables.",
+    "tags": ["vegetable"],
     "words": [
         "acorn squash",
         "alfalfa sprout",

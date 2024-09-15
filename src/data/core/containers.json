@@ -1,5 +1,6 @@
 {
   "description": "List of objects that can contain other objects",
+  "tags": ["container"],
   "words": [
     "arrangement",
     "bag",

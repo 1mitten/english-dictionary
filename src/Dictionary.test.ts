@@ -1,6 +1,6 @@
 import { Dictionary } from "./Dictionary";
 import { WordMetadata } from "./types/WordMetadata.type";
-import dictionaryData from "./data/dictionary_compact.json";
+import dictionaryData from "./data/dictionary/dictionary_compact.json";
 
 describe("Dictionary", () => {
   let dictionary: Dictionary;

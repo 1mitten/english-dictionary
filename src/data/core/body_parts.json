@@ -1,5 +1,6 @@
 {
   "description": "A list of common human body parts.",
+  "tags": ["human:parts"],
   "words": [
     "ankle",
     "arm",

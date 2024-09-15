@@ -1,6 +1,7 @@
 {
     "description": "A list of English verbs.",
-    "verbs": [
+    "tags": ["verb"],
+    "words": [
         {
             "present": "accept",
             "past": "accepted"
