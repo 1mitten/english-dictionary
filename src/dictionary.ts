@@ -1,31 +1,14 @@
 import dictionaryData from "./data/dictionary_compact.json";
-import animals from "./data/animals.json"; // Import your JSON file with animals or other taggable words
-import clues_five from "./data/clues_five.json"; // Import your JSON file with 5-letter word clues
-import clues_four from "./data/clues_four.json"; // Import your JSON file with 4-letter word clues
-import clues_six from "./data/clues_six.json"; // Import your JSON file with 6-letter word clues
-import common from "./data/common.json"; // Import your JSON file with 6-letter word clues
-import nouns from "./data/nouns.json"; // Import your JSON file with 6-letter word clues
-import verbs from "./data/verbs.json"; // Import your JSON file with 6-letter word clues#
-import adverbs from "./data/adverbs.json"; // Import your JSON file with 6-letter word clues
-import adjectives from "./data/adjectives.json"; // Import your JSON file with 6-letter word clues
-import stopwords from "./data/stopwords.json";
-import clothing from "./data/clothing.json";
-import containers from "./data/containers.json";
+import clues_five from "./data/clues_five.json";
+import clues_four from "./data/clues_four.json";
+import clues_six from "./data/clues_six.json";
+import verbs from "./data/verbs.json";
 import old_weapons from "./data/old_weapons.json";
-import objects from "./data/objects.json";
-import moods from "./data/moods.json";
-import monsters from "./data/monsters.json";
-import body_parts from "./data/body_parts.json";
-import musical_instruments from "./data/musical_instruments.json";
-import countries from "./data/countries.json";
-import passages from "./data/passages.json";
-import rooms from "./data/rooms.json";
-import flowers from "./data/flowers.json";
-import fabrics from "./data/fabrics.json";
-import adjectives_people from "./data/adjectives_people.json";
-import vegetables from "./data/vegetables.json";
-import vehicles from "./data/vehicles.json";
+import { DatasetLoader } from "./DatasetLoader"; // Import the DatasetLoader class
 
+type DatasetConfig = {
+  [key: string]: { data: string[]; tags: string[] };
+};
 
 export type WordDescription = {
   word: string;
@@ -60,40 +43,9 @@ export class Dictionary {
       );
     }
 
-    // Load multiple datasets with clues and tags
-    this.loadDatasets({
-      adjectives: { data: adjectives.adjs, tags: ["adjective"] },
-      adjectives_people: {
-        data: adjectives_people.words,
-        tags: ["adjective:people"],
-      },
-      animals: { data: animals.animals, tags: ["animal"] },
-      common: { data: common.words, tags: ["common"] },
-      containers: { data: containers.words, tags: ["container"] },
-      countries: { data: countries.words, tags: ["country"] },
-      clothing: { data: clothing.words, tags: ["clothing"] },
-      fabrics: { data: fabrics.words, tags: ["fabric"] },
-      flowers: { data: flowers.words, tags: ["flower"] },
-      monsters: { data: monsters.words, tags: ["monster"] },
-      musical_instruments: {
-        data: musical_instruments.words,
-        tags: ["music:instruments"],
-      },
-      objects: { data: objects.words, tags: ["object"] },
-      passages: { data: passages.words, tags: ["passage"] },
-      nouns: { data: nouns.words, tags: ["noun"] },
-      adverbs: { data: adverbs.words, tags: ["adverb"] },
-
-      stopwords: { data: stopwords.words, tags: ["stopword"] },
-      moods: { data: moods.words, tags: ["mood"] },
-      body_parts: {
-        data: body_parts.words,
-        tags: ["body", "human", "anatomy"],
-      },
-      rooms: { data: rooms.words, tags: ["room", "place"] },
-      vegetables: { data: vegetables.words, tags: ["vegetable", "food"] },
-      vehicles: { data: vehicles.words, tags: ["vehicle", "food"] },
-    });
+    const datasetLoader = new DatasetLoader();
+    const datasetData = datasetLoader.loadDatasets();
+    this.data = new Map([...this.data, ...datasetData]);
 
     this.loadVerbs(verbs.verbs);
     this.loadWeapons(old_weapons.data);
@@ -164,36 +116,6 @@ export class Dictionary {
       }
     });
     return filteredMap;
-  }
-
-  private loadDatasets(datasets: {
-    [key: string]: { data: string[]; tags: string[] };
-  }): void {
-    Object.keys(datasets).forEach((key) => {
-      const { data, tags } = datasets[key];
-      this.applyMultipleTagsToWords(data, tags);
-    });
-  }
-  // Apply multiple tags to a list of words
-  private applyMultipleTagsToWords(words: string[], tags: string[]): void {
-    words.forEach((word) => {
-      const normalizedWord = word.toLowerCase();
-      const wordDescription = this.data.get(normalizedWord);
-
-      if (wordDescription) {
-        // If the word already exists, append the new tags
-        wordDescription.tags = [...(wordDescription.tags || []), ...tags];
-        this.data.set(normalizedWord, wordDescription); // Update the data
-      } else if (this.options?.includeDataFromDatasets) {
-        // If the word doesn't exist, create a new entry with all the tags
-        this.data.set(normalizedWord, {
-          word: normalizedWord,
-          description: `Tagged with ${tags.join(", ")}`,
-          isDictionaryWord: false,
-          tags: [...tags],
-        });
-      }
-    });
   }
 
   // Apply a specific tag to a list of words
@@ -274,6 +196,7 @@ export class Dictionary {
   }
 
   public find(word: string): WordDescription | undefined {
+    if(!word) return;
     return this.data.get(word.toLowerCase());
   }
 
