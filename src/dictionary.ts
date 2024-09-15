@@ -2,7 +2,7 @@ import dictionaryData from "./data/dictionary_compact.json";
 import clues_five from "./data/clues_five.json";
 import clues_four from "./data/clues_four.json";
 import clues_six from "./data/clues_six.json";
-import { DatasetLoader } from "./DatasetLoader"; // Import the DatasetLoader class
+import { DatasetLoader } from "./DatasetLoader";
 import { WordMetadata } from "./types/WordMetadata.type";
 import { Options } from "./types/Options.type";
 
@@ -179,7 +179,6 @@ export class Dictionary {
     });
     return this;
   }
-
   /**
    * Find a single word
    * @param word

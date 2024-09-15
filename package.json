@@ -10,7 +10,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && npx typedoc",
+    "build": "tsc",
     "start": "ts-node src/index.ts",
     "clean": "rimraf dist",
     "test": "jest --coverage",
