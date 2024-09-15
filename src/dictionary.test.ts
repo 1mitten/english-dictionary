@@ -4,10 +4,16 @@ import dictionaryData from "./data/dictionary_compact.json";
 
 describe("Dictionary", () => {
   let dictionary: Dictionary;
+  let dictionaryMasked: Dictionary;
   const dictSource = dictionaryData as Record<string, string>;
 
   beforeAll(() => {
     dictionary = new Dictionary();
+    dictionaryMasked = new Dictionary({
+      maskWordInDescription: "*",
+      wordMinLength: 3,
+      wordMaxLength: 5,
+    })
   });
 
   it("should transform the JSON data into a case-insensitive dictionary", () => {
@@ -74,44 +80,43 @@ describe("Dictionary", () => {
   });
 
   it("Should mask the word in the description with asterix", () => {
-    const dict = new Dictionary({
-      maskWordInDescription: "*",
-      wordMinLength: 3,
-      wordMaxLength: 5,
-    });
     const test =
       "The quality of being admissible; admissibleness; as, the admissibility of evidence.";
-    const word = dict.find("admissibility");
+    const word = dictionaryMasked.find("admissibility");
     expect(word?.description).toEqual(
       "The quality of being admissible; admissibleness; as, the * of evidence."
     );
   });
 
   it("Should mask the word in the description with asterix", () => {
-    const dict = new Dictionary({
-      maskWordInDescription: "*",
-      wordMinLength: 3,
-      wordMaxLength: 5,
-    });
     const test =
       "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the sagittal suture; in the region of the sagittal suture; rabdoidal; as, the sagittal furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a sagittal section of an animal. Sagittal suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
-    const word = dict.find("sagittal");
+    const word = dictionaryMasked.find("sagittal");
     const expected =
       "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the * suture; in the region of the * suture; rabdoidal; as, the * furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a * section of an animal. * suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
     expect(word?.description).toEqual(expected);
   });
 
   it("Should mask the word in the description with asterix", () => {
-    const dict = new Dictionary({
-      maskWordInDescription: "*",
-      wordMinLength: 3,
-      wordMaxLength: 5,
-    });
+
     const test =
       "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the sagittal suture; in the region of the sagittal suture; rabdoidal; as, the sagittal furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a sagittal section of an animal. Sagittal suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
-    const word = dict.find("sagittal");
+    const word = dictionaryMasked.find("sagittal");
     const expected =
       "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the * suture; in the region of the * suture; rabdoidal; as, the * furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a * section of an animal. * suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
     expect(word?.description).toEqual(expected);
   });
+  // it('should return words that have clues', () => {
+  //   const result = instance.wordsWithClues();
+
+  //   expect(result).toEqual([
+  //     {
+  //       word: 'apple',
+  //       description: 'A fruit',
+  //       clues: ['It can be red or green'],
+  //       tags: ['fruit', 'food'],
+  //       isDictionaryWord: true,
+  //     },
+  //   ]);
+  // });
 });
