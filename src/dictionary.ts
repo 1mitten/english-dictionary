@@ -9,7 +9,7 @@ export type WordDescription = {
   description: string;
   isDictionaryWord: boolean;
   clues?: string[];
-  tags?: string[]; // Allow tags to be optional
+  tags?: string[]; 
 };
 
 export type Options = {

@@ -1,4 +1,5 @@
-import { Dictionary } from "./Dictionary";
+import { DatasetLoader } from "./DatasetLoader";
+import { Dictionary, WordDescription } from "./Dictionary";
 import dictionaryData from "./data/dictionary_compact.json";
 
 describe("Dictionary", () => {
@@ -75,6 +76,8 @@ describe("Dictionary", () => {
   it("Should mask the word in the description with asterix", () => {
     const dict = new Dictionary({
       maskWordInDescription: "*",
+      wordMinLength: 3,
+      wordMaxLength: 5,
     });
     const test =
       "The quality of being admissible; admissibleness; as, the admissibility of evidence.";
@@ -87,6 +90,8 @@ describe("Dictionary", () => {
   it("Should mask the word in the description with asterix", () => {
     const dict = new Dictionary({
       maskWordInDescription: "*",
+      wordMinLength: 3,
+      wordMaxLength: 5,
     });
     const test =
       "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the sagittal suture; in the region of the sagittal suture; rabdoidal; as, the sagittal furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a sagittal section of an animal. Sagittal suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
@@ -99,6 +104,8 @@ describe("Dictionary", () => {
   it("Should mask the word in the description with asterix", () => {
     const dict = new Dictionary({
       maskWordInDescription: "*",
+      wordMinLength: 3,
+      wordMaxLength: 5,
     });
     const test =
       "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the sagittal suture; in the region of the sagittal suture; rabdoidal; as, the sagittal furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a sagittal section of an animal. Sagittal suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";

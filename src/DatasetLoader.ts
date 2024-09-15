@@ -22,7 +22,6 @@ import vehicles from "./data/vehicles.json";
 import old_weapons from "./data/old_weapons.json";
 import { WordDescription } from "./Dictionary";
 
-// More flexible DatasetConfig type without enforcing a rigid schema
 type DatasetConfig = {
   [key: string]: { data: any; tags: string[] };
 };
@@ -77,7 +76,7 @@ export class DatasetLoader {
   }
 
   // Dynamically apply tags based on the data structure (arrays, objects, etc.)
-  private applyTagsToWords(
+  public applyTagsToWords(
     words: any, // Any type of dataset
     baseTags: string[],
     dictionary: Map<string, WordDescription>
