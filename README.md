@@ -2,16 +2,18 @@
 
 [![english-dictionary](https://github.com/1mitten/english-dictionary/actions/workflows/ci.yml/badge.svg)](https://github.com/1mitten/english-dictionary/actions/workflows/ci.yml)
 
-Contains a queryable english dictionary with descriptions, and also to pull data using tags.
+This package provides a queryable English dictionary with descriptions, enriched by tags for various use cases. It comes preloaded with datasets that are cross-referenced to tag existing words and allowing for flexible querying.
 
-Datasets are preloaded with default tagging and is cross referenced to tag the dictionary against existing words.  
-for a variety of use cases such as:-
-
-- Word Games
-- Generate content from use of tagging and words
-- For English Dictionary lookup
-- To inject your own data and use
-- To create an export or migration of data 
+Key Features:
+- Word Lookup: Search for words with detailed descriptions.
+- Tagging System: Filter and query words using predefined tags (e.g., verbs, nouns, adjectives).
+- Custom Data: Inject your own word metadata and tags for custom use cases.
+- Export Data: Generate exports or migrations of the dictionary and associated tags.
+Use Cases:
+- Word Games: Create games by querying words with specific tags.
+- Content Generation: Use tags and word data to generate content.
+- Dictionary Lookup: Perform traditional English dictionary lookups.
+- Custom Datasets: Inject and use your own datasets to extend functionality.
 
 <h5>Create new instance and perform a simple word find</h5>
 
