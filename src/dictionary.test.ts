@@ -106,17 +106,33 @@ describe("Dictionary", () => {
       "1. Of or pertaining to an arrow; resembling an arrow; furnished with an arowlike appendage. 2. (Anat.) (a) Of or pertaining to the * suture; in the region of the * suture; rabdoidal; as, the * furrow, or groove, on the inner surface of the roof of the skull. (b) In the mesial plane; as, a * section of an animal. * suture (Anat.), the suture between the two parietal bones in the top of the skull; -- called also rabdoidal suture, and interparietal suture.";
     expect(word?.description).toEqual(expected);
   });
-  // it('should return words that have clues', () => {
-  //   const result = instance.wordsWithClues();
+  it('should return words that have clues', () => {
+    const words = dictionary.wordsWithClues(); 
 
-  //   expect(result).toEqual([
-  //     {
-  //       word: 'apple',
-  //       description: 'A fruit',
-  //       clues: ['It can be red or green'],
-  //       tags: ['fruit', 'food'],
-  //       isDictionaryWord: true,
-  //     },
-  //   ]);
-  // });
+    let result = true;
+  
+    for (const word of words) {
+      if (!word.clues || word.clues.length === 0) {
+        result = false;
+        break;
+      }
+    }
+  
+    expect(result).toBe(true); 
+  });
+  it('should return words with all matching tags when matchAll is true', () => {
+    const words = dictionary.wordsByTags(['vegetable'], true);
+
+    let result = true;
+
+    for (const word of words) {
+      if (!word.tags || word.tags.length === 0 || !word.tags.includes('vegetable')) {
+        result = false;
+        break;
+      }
+    
+      expect(result).toBe(true);
+
+    }
+  });
 });
