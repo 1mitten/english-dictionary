@@ -92,33 +92,33 @@ describe("Dictionary", () => {
   });
 
   it("should return all of the 5 letter words from the dictionary without descriptions", async () => {
-    const result = await inmemoryProvider.findByWordLengthRange(5, 5).get();
+    const result = await inmemoryProvider.findByWordLengthRange(5, 5);
     expect(result.length).toBe(1);
   });
 
   it("should return all of the 5 letter words from the dictionary with descriptions", async () => {
-    const result = await inmemoryProvider.findByWordLengthRange(5, 5).get();
+    const result = await inmemoryProvider.findByWordLengthRange(5, 5);
     expect(result[0].word.length).toBeGreaterThan(0);
     expect(result.length).toBe(1);
   });
 
   it("should return words by length range", async () => {
-    const result = await inmemoryProvider.findByWordLengthRange(3, 5).get();
+    const result = await inmemoryProvider.findByWordLengthRange(3, 5);
     expect(result.every((word: { word: string | any[]; }) => word.word.length >= 3 && word.word.length <= 5)).toBe(true);
   });
 
   it("should return words by a prefix", async () => {
-    const result = await inmemoryProvider.findByPrefix("pre").get();
+    const result = await inmemoryProvider.findByPrefix("pre");
     expect(result.every((word: { word: string; }) => word.word.startsWith("pre"))).toBe(true);
   });
 
   it("should return words by a suffix", async () => {
-    const result = await inmemoryProvider.findBySuffix("ing").get();
+    const result = await inmemoryProvider.findBySuffix("ing");
     expect(result.every((word: { word: string; }) => word.word.endsWith("ing"))).toBe(true);
   });
 
   it("should return words by a substring", async () => {
-    const result = await inmemoryProvider.findBySubstring("cat").get();
+    const result = await inmemoryProvider.findBySubstring("cat");
     expect(result.every((word: { word: string | string[]; }) => word.word.includes("cat"))).toBe(true);
   });
 

@@ -156,14 +156,15 @@ export class InMemoryProvider implements Provider {
      * @param regex
      * @returns this for chaining
      */
-    public filter(regex: RegExp): this {
+    public filter(regex: RegExp): Promise<WordMetadata[]> {
         this.filteredData = new Map<string, WordMetadata>();
         this.data.forEach((WordMetadata) => {
             if (regex.test(WordMetadata.word)) {
                 this.filteredData.set(WordMetadata.word, WordMetadata);
             }
         });
-        return this;
+        const result = Array.from(this.filteredData.values());
+        return Promise.resolve(result);
     }
     /**
      * Find a single word
@@ -233,7 +234,7 @@ export class InMemoryProvider implements Provider {
      * @param prefix
      * @returns this for chaining
      */
-    public findByPrefix(prefix: string): this {
+    public findByPrefix(prefix: string): Promise<WordMetadata[]> {
         const currentData = this.filteredData.size ? this.filteredData : this.data; // Use filteredData if it exists
         this.filteredData = new Map();
         currentData.forEach((WordMetadata) => {
@@ -241,7 +242,8 @@ export class InMemoryProvider implements Provider {
                 this.filteredData.set(WordMetadata.word, WordMetadata);
             }
         });
-        return this;
+        const result = Array.from(this.filteredData.values());
+        return Promise.resolve(result);
     }
 
 
@@ -250,7 +252,7 @@ export class InMemoryProvider implements Provider {
      * @param suffix
      * @returns this for chaining
      */
-    public findBySuffix(suffix: string): this {
+    public findBySuffix(suffix: string): Promise<WordMetadata[]> {
         const currentData = this.filteredData.size ? this.filteredData : this.data; // Use filteredData if it exists
         this.filteredData = new Map();
         currentData.forEach((WordMetadata) => {
@@ -258,14 +260,15 @@ export class InMemoryProvider implements Provider {
                 this.filteredData.set(WordMetadata.word, WordMetadata);
             }
         });
-        return this;
+        const result = Array.from(this.filteredData.values());
+        return Promise.resolve(result);
     }
     /**
      * Filter words by a substring, For example pot will return pot, spot and spotty.
      * @param substring
      * @returns this for chaining
      */
-    public findBySubstring(substring: string): this {
+    public findBySubstring(substring: string): Promise<WordMetadata[]> {
         const currentData = this.filteredData.size ? this.filteredData : this.data; // Use filteredData if it exists
         this.filteredData = new Map();
         currentData.forEach((WordMetadata) => {
@@ -273,7 +276,8 @@ export class InMemoryProvider implements Provider {
                 this.filteredData.set(WordMetadata.word, WordMetadata);
             }
         });
-        return this;
+        const result = Array.from(this.filteredData.values());
+        return Promise.resolve(result);
     }
 
     /**
@@ -282,7 +286,7 @@ export class InMemoryProvider implements Provider {
      * @param max
      * @returns this for chaining
      */
-    public findByWordLengthRange(min: number, max: number): this {
+    public findByWordLengthRange(min: number, max: number): Promise<WordMetadata[]> {
         const currentData = this.filteredData.size ? this.filteredData : this.data; // Use filteredData if it exists
         this.filteredData = new Map();
         currentData.forEach((WordMetadata) => {
@@ -293,7 +297,8 @@ export class InMemoryProvider implements Provider {
                 this.filteredData.set(WordMetadata.word, WordMetadata);
             }
         });
-        return this;
+        const result = Array.from(this.filteredData.values());
+        return Promise.resolve(result);
     }
 
     /**

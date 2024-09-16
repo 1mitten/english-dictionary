@@ -12,38 +12,23 @@ export class Dictionary implements Provider {
   find(word: string): Promise<WordMetadata | undefined> {
     return this.provider.find(word);
   }
-  findByPrefix(prefix: string): Promise<WordMetadata[]> | this {
-    const result = this.provider.findByPrefix(prefix);
-    if (result instanceof Promise) {
-      return result;
-    }
-    return this;
+  findByPrefix(prefix: string): Promise<WordMetadata[]> {
+    return this.provider.findByPrefix(prefix);
 
   }
-  findBySuffix(suffix: string): Promise<WordMetadata[]> | this {
-    const result = this.provider.findBySuffix(suffix);
-    if (result instanceof Promise) {
-      return result;
-    }
-    return this;
+  findBySuffix(suffix: string): Promise<WordMetadata[]> {
+    return this.provider.findBySuffix(suffix);
   }
-  findBySubstring(substring: string): Promise<WordMetadata[]> | this {
-    const result = this.provider.findBySubstring(substring);
-    if (result instanceof Promise) {
-      return result;
-    }
-    return this;
+  findBySubstring(substring: string): Promise<WordMetadata[]> {
+    return this.provider.findBySubstring(substring);
+
   }
   findByDescription(text: string): Promise<WordMetadata[]> {
     return this.provider.findByDescription(text);
 
   }
-  findByWordLengthRange(min: number, max: number): Promise<WordMetadata[]> | this {
-    const result = this.provider.findByWordLengthRange(min, max);
-    if (result instanceof Promise) {
-      return result;
-    }
-    return this;
+  findByWordLengthRange(min: number, max: number): Promise<WordMetadata[]> {
+    return this.provider.findByWordLengthRange(min, max);
   }
   findWordsByTags(tags: string[], matchAll: boolean): Promise<WordMetadata[]> {
     return this.provider.findWordsByTags(tags, matchAll);
@@ -57,12 +42,8 @@ export class Dictionary implements Provider {
     return this.provider.getRandomWords(count);
 
   }
-  filter(regex: RegExp): this | Promise<WordMetadata[]> {
-    const result = this.provider.filter(regex);
-    if (result instanceof Promise) {
-      return result;
-    }
-    return this;
+  filter(regex: RegExp): Promise<WordMetadata[]> {
+    return this.provider.filter(regex);
   }
 
 }
