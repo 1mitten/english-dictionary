@@ -163,7 +163,7 @@ export class InMemoryProvider implements Provider {
                 this.filteredData.set(WordMetadata.word, WordMetadata);
             }
         });
-        const result = Array.from(this.filteredData.values());
+        const result = Array.from(this.filteredData.values()).sort((a, b) => b.word.localeCompare(a.word));
         return Promise.resolve(result);
     }
     /**
@@ -184,7 +184,7 @@ export class InMemoryProvider implements Provider {
     public async findMany(words: string[]): Promise<WordMetadata[]> {
         const wordPromises = words.map((word) => this.find(word));  // Map words to promises
         const wordResults = await Promise.all(wordPromises);  // Await all promises to resolve
-        return wordResults.filter((wordDesc): wordDesc is WordMetadata => !!wordDesc);  // Filter out undefined
+        return wordResults.filter((wordDesc): wordDesc is WordMetadata => !!wordDesc).sort((a, b) => b.word.localeCompare(a.word));  // Filter out undefined
     }
 
 
@@ -214,7 +214,7 @@ export class InMemoryProvider implements Provider {
     public async getRandomWords(count: number): Promise<WordMetadata[]> {
         const words = Array.from(this.data.values());
         const shuffled = [...words].sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, count);
+        return shuffled.slice(0, count).sort((a, b) => b.word.localeCompare(a.word));
     }
 
     /**
@@ -226,7 +226,7 @@ export class InMemoryProvider implements Provider {
         // Return the filtered results based on the description containing the text
         return Array.from(this.data.values()).filter(word =>
             word.description.toLowerCase().includes(text.toLowerCase())
-        );
+        ).sort((a, b) => b.word.localeCompare(a.word));
     }
 
     /**
@@ -242,7 +242,7 @@ export class InMemoryProvider implements Provider {
                 this.filteredData.set(WordMetadata.word, WordMetadata);
             }
         });
-        const result = Array.from(this.filteredData.values());
+        const result = Array.from(this.filteredData.values()).sort((a, b) => b.word.localeCompare(a.word));
         return Promise.resolve(result);
     }
 
@@ -260,7 +260,7 @@ export class InMemoryProvider implements Provider {
                 this.filteredData.set(WordMetadata.word, WordMetadata);
             }
         });
-        const result = Array.from(this.filteredData.values());
+        const result = Array.from(this.filteredData.values()).sort((a, b) => b.word.localeCompare(a.word));
         return Promise.resolve(result);
     }
     /**
@@ -276,7 +276,7 @@ export class InMemoryProvider implements Provider {
                 this.filteredData.set(WordMetadata.word, WordMetadata);
             }
         });
-        const result = Array.from(this.filteredData.values());
+        const result = Array.from(this.filteredData.values()).sort((a, b) => b.word.localeCompare(a.word));
         return Promise.resolve(result);
     }
 
@@ -297,7 +297,7 @@ export class InMemoryProvider implements Provider {
                 this.filteredData.set(WordMetadata.word, WordMetadata);
             }
         });
-        const result = Array.from(this.filteredData.values());
+        const result = Array.from(this.filteredData.values()).sort((a, b) => b.word.localeCompare(a.word));
         return Promise.resolve(result);
     }
 
@@ -353,7 +353,7 @@ export class InMemoryProvider implements Provider {
             }
         });
 
-        return taggedWords;
+        return taggedWords.sort((a, b) => b.word.localeCompare(a.word));
     }
 
     /**
