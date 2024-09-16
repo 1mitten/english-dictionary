@@ -1,6 +1,7 @@
 import { WordMetadata } from './types/WordMetadata.type';
 import { Provider } from './Provider';
 import { InMemoryProvider } from './InMemoryProvider';
+import { ResourceData } from './types/ResourceData.type';
 
 
 export class Dictionary implements Provider {
@@ -8,6 +9,9 @@ export class Dictionary implements Provider {
 
   constructor(provider: Provider = new InMemoryProvider()) {
     this.provider = provider;
+  }
+  getResourceData(): Promise<ResourceData> {
+    return this.provider.getResourceData();
   }
   find(word: string): Promise<WordMetadata | undefined> {
     return this.provider.find(word);
