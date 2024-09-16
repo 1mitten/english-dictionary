@@ -326,22 +326,22 @@ export class InMemoryProvider implements Provider {
   ): Promise<WordMetadata[]> {
     const taggedWords: WordMetadata[] = [];
     if (!tags || tags.length === 0) return taggedWords;
-
+  
     // Iterate through the data Map and filter words by tags
     this.data.forEach((WordMetadata) => {
       if (WordMetadata.tags) {
         if (matchAll) {
-          // Check if word contains all specified tags (exact match)
+          // Check if word contains all specified tags (if tag starts with any of the specified tags)
           const hasAllTags = tags.every((tag) =>
-            WordMetadata.tags!.includes(tag)
+            WordMetadata.tags!.some((wordTag) => wordTag.startsWith(tag))
           );
           if (hasAllTags) {
             taggedWords.push(WordMetadata);
           }
         } else {
-          // Check if word contains at least one of the specified tags (exact match)
+          // Check if word contains at least one of the specified tags (if tag starts with any of the specified tags)
           const hasAnyTag = tags.some((tag) =>
-            WordMetadata.tags!.includes(tag)
+            WordMetadata.tags!.some((wordTag) => wordTag.startsWith(tag))
           );
           if (hasAnyTag) {
             taggedWords.push(WordMetadata);
@@ -349,10 +349,10 @@ export class InMemoryProvider implements Provider {
         }
       }
     });
-
+  
     return taggedWords.sort((a, b) => b.word.localeCompare(a.word));
   }
-
+  
   /**
    * Exports to stringed JSON
    * @param removeNullValues default = true, set to false to retain null values
