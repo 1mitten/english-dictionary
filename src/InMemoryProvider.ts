@@ -214,14 +214,13 @@ export class InMemoryProvider implements Provider {
      * @returns this for chaining
      */
     public findByPrefix(prefix: string): Promise<WordMetadata[]> {
-
+        let words: WordMetadata[] = [];
         this.data.forEach((WordMetadata) => {
             if (WordMetadata.word.startsWith(prefix.toLowerCase())) {
-                this.data.set(WordMetadata.word, WordMetadata);
+                words.push(WordMetadata)
             }
         });
-        const result = Array.from(this.data.values()).sort((a, b) => b.word.localeCompare(a.word));
-        return Promise.resolve(result);
+        return Promise.resolve(words);
     }
 
 
@@ -231,13 +230,13 @@ export class InMemoryProvider implements Provider {
      * @returns this for chaining
      */
     public findBySuffix(suffix: string): Promise<WordMetadata[]> {
+        let words: WordMetadata[] = [];
         this.data.forEach((WordMetadata) => {
             if (WordMetadata.word.endsWith(suffix.toLowerCase())) {
-                this.data.set(WordMetadata.word, WordMetadata);
+                words.push(WordMetadata);
             }
         });
-        const result = Array.from(this.data.values()).sort((a, b) => b.word.localeCompare(a.word));
-        return Promise.resolve(result);
+        return Promise.resolve(words);
     }
     /**
      * Filter words by a substring, For example pot will return pot, spot and spotty.
@@ -245,14 +244,14 @@ export class InMemoryProvider implements Provider {
      * @returns this for chaining
      */
     public findBySubstring(substring: string): Promise<WordMetadata[]> {
-
+        const words: WordMetadata[] = [];
         this.data.forEach((WordMetadata) => {
             if (WordMetadata.word.includes(substring.toLowerCase())) {
-                this.data.set(WordMetadata.word, WordMetadata);
+
+                words.push(WordMetadata);
             }
         });
-        const result = Array.from(this.data.values()).sort((a, b) => b.word.localeCompare(a.word));
-        return Promise.resolve(result);
+        return Promise.resolve(words);
     }
 
     /**
@@ -263,16 +262,19 @@ export class InMemoryProvider implements Provider {
      */
     public findByWordLengthRange(min: number, max: number): Promise<WordMetadata[]> {
 
+        let words: WordMetadata[] = [];
         this.data.forEach((WordMetadata) => {
             if (
                 WordMetadata.word.length >= min &&
                 WordMetadata.word.length <= max
             ) {
-                this.data.set(WordMetadata.word, WordMetadata);
+                // this.data.set(WordMetadata.word, WordMetadata);
+                words.push(WordMetadata);
             }
         });
-        const result = Array.from(this.data.values()).sort((a, b) => b.word.localeCompare(a.word));
-        return Promise.resolve(result);
+        // const result = Array.from(this.data.values()).sort((a, b) => b.word.localeCompare(a.word));
+        // return Promise.resolve(result);
+        return Promise.resolve(words);
     }
 
     /**

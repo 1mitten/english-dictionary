@@ -5,12 +5,12 @@ import { InMemoryProvider } from './InMemoryProvider';
 
 describe("Dictionary", () => {
   let dictionarySimple: Dictionary;
-  let inmemoryProvider: InMemoryProvider;
+
   const wordDescs: WordMetadata[] = [
     {
       word: "apple",
       description: "A fruit",
-      clues: ["It can be red or green, a fruit"],
+      clues: ["It can be red or green, a apple"],
       tags: ["fruit", "food"],
       isDictionaryWord: true,
     },
@@ -28,24 +28,23 @@ describe("Dictionary", () => {
     },
     {
       word: "date",
-      description: "A type of fruit",
+      description: "A type of date fruit",
       isDictionaryWord: true,
     },
     {
       word: "elephant",
-      description: "A large animal *",
+      description: "A large animal elephant",
       isDictionaryWord: true,
     }
   ];
-
-  beforeAll(() => {
-    inmemoryProvider = new InMemoryProvider({
-      wordMinLength: 3,
-      wordMaxLength: 7,
-      includeDataFromDatasets: false,
-      loadCluesDataset: false,
-    },
-      wordDescs)
+  const inmemoryProvider = new InMemoryProvider({
+    wordMinLength: 3,
+    wordMaxLength: 7,
+    includeDataFromDatasets: false,
+    loadCluesDataset: false,
+    maskWordInDescription: "*",
+  }, wordDescs);
+  beforeEach(() => {
     dictionarySimple = new Dictionary(inmemoryProvider);
   });
 
@@ -86,7 +85,7 @@ describe("Dictionary", () => {
 
   it("should return all of the 5 letter words from the dictionary with descriptions", async () => {
     const result = await inmemoryProvider.findByWordLengthRange(5, 5);
-    expect(result.length).toBe(4);
+    expect(result.length).toBe(1);
   });
 
   it("should return words by length range", async () => {
@@ -110,8 +109,8 @@ describe("Dictionary", () => {
   });
 
   it("Should mask the word in the description with asterisks", async () => {
-    const word = await dictionarySimple.find("elephant");
-    expect(word?.description).toEqual("A large animal *");
+    const word = await dictionarySimple.find("date");
+    expect(word?.description).toEqual("A type of * fruit");
   });
 
 
@@ -180,8 +179,8 @@ describe("Dictionary", () => {
   });
 
   it("should return different sets of random words (non-deterministic)", async () => {
-    const firstSet = await dictionarySimple.getRandomWords(3);
-    const secondSet = await dictionarySimple.getRandomWords(3);
+    const firstSet = await dictionarySimple.getRandomWords(1);
+    const secondSet = await dictionarySimple.getRandomWords(1);
     expect(firstSet).not.toEqual(secondSet);
   });
 
