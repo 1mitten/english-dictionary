@@ -2,41 +2,13 @@ import { Dictionary } from "./Dictionary";
 import { WordMetadata } from "./types/WordMetadata.type";
 import dictionaryData from "./data/dictionary/dictionary_compact.json";
 import { InMemoryProvider } from './InMemoryProvider';
+import { createRandomData, wordDescs } from './test.data';
 
 describe("Dictionary", () => {
   let dictionarySimple: Dictionary;
 
-  const wordDescs: WordMetadata[] = [
-    {
-      word: "apple",
-      description: "A fruit",
-      clues: ["It can be red or green, a apple"],
-      tags: ["fruit", "food"],
-      isDictionaryWord: true,
-    },
-    {
-      word: "banana",
-      description: "A yellow fruit",
-      tags: ["fruit"],
-      isDictionaryWord: true,
-    },
-    {
-      word: "carrot",
-      description: "A vegetable",
-      tags: ["vegetable"],
-      isDictionaryWord: true,
-    },
-    {
-      word: "date",
-      description: "A type of date fruit",
-      isDictionaryWord: true,
-    },
-    {
-      word: "elephant",
-      description: "A large animal elephant",
-      isDictionaryWord: true,
-    }
-  ];
+  
+  const randomData = createRandomData();
   const inmemoryProvider = new InMemoryProvider({
     wordMinLength: 3,
     wordMaxLength: 7,
@@ -174,13 +146,25 @@ describe("Dictionary", () => {
   });
 
   it("should return the correct number of random words", async () => {
+
+    dictionarySimple = new Dictionary(new InMemoryProvider({
+      wordMinLength: 1,
+      wordMaxLength: 10
+    },randomData)); 
+
     const result = await dictionarySimple.getRandomWords(3);
     expect(result.length).toBe(3);
   });
 
   it("should return different sets of random words (non-deterministic)", async () => {
-    const firstSet = await dictionarySimple.getRandomWords(1);
-    const secondSet = await dictionarySimple.getRandomWords(1);
+
+    dictionarySimple = new Dictionary(new InMemoryProvider({
+      wordMinLength: 1,
+      wordMaxLength: 10
+    },randomData)); 
+
+    const firstSet = await dictionarySimple.getRandomWords(3);
+    const secondSet = await dictionarySimple.getRandomWords(3);
     expect(firstSet).not.toEqual(secondSet);
   });
 

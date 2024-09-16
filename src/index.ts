@@ -17,5 +17,5 @@ app.use('/api/dictionary', DictionaryRoutes);
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`English Directory is running on http://localhost:${port}`);
 });
