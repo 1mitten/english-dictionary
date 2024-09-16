@@ -20,7 +20,6 @@ const defaultOptions: Options = {
 
 export class InMemoryProvider implements Provider {
     private data: Map<string, WordMetadata>;
-    private filteredData: Map<string, WordMetadata>;
 
     /**
      * 
@@ -32,7 +31,6 @@ export class InMemoryProvider implements Provider {
         public words?: WordMetadata[]
     ) {
         this.data = new Map();
-        this.filteredData = new Map();
 
         if (words) {
             this.loadWords(words);
@@ -60,7 +58,7 @@ export class InMemoryProvider implements Provider {
             this.maskWordsInDescriptions(options.maskWordInDescription);
         }
 
-        this.filteredData = this.filterByLengthRange(
+        this.data = this.filterByLengthRange(
             this.options.wordMinLength,
             this.options.wordMaxLength
         );
@@ -157,13 +155,12 @@ export class InMemoryProvider implements Provider {
      * @returns this for chaining
      */
     public filter(regex: RegExp): Promise<WordMetadata[]> {
-        this.filteredData = new Map<string, WordMetadata>();
         this.data.forEach((WordMetadata) => {
             if (regex.test(WordMetadata.word)) {
-                this.filteredData.set(WordMetadata.word, WordMetadata);
+                this.data.set(WordMetadata.word, WordMetadata);
             }
         });
-        const result = Array.from(this.filteredData.values()).sort((a, b) => b.word.localeCompare(a.word));
+        const result = Array.from(this.data.values()).sort((a, b) => b.word.localeCompare(a.word));
         return Promise.resolve(result);
     }
     /**
@@ -187,24 +184,6 @@ export class InMemoryProvider implements Provider {
         return wordResults.filter((wordDesc): wordDesc is WordMetadata => !!wordDesc).sort((a, b) => b.word.localeCompare(a.word));  // Filter out undefined
     }
 
-
-    /**
-     * To get filtered data based on previous chained functions
-     * @returns WordMetadata[]
-     */
-    public get(): WordMetadata[] {
-        const wordMetadatas = Array.from(this.filteredData.values());
-        this.filteredData = new Map();
-        return wordMetadatas;
-    }
-
-    /**
-     * To retrieve filtered data as a single list of words
-     * @returns string[]
-     */
-    public getArray(): string[] {
-        return Array.from(this.filteredData.keys());
-    }
 
     /**
      * Retrieve random words
@@ -235,14 +214,13 @@ export class InMemoryProvider implements Provider {
      * @returns this for chaining
      */
     public findByPrefix(prefix: string): Promise<WordMetadata[]> {
-        const currentData = this.filteredData.size ? this.filteredData : this.data; // Use filteredData if it exists
-        this.filteredData = new Map();
-        currentData.forEach((WordMetadata) => {
+
+        this.data.forEach((WordMetadata) => {
             if (WordMetadata.word.startsWith(prefix.toLowerCase())) {
-                this.filteredData.set(WordMetadata.word, WordMetadata);
+                this.data.set(WordMetadata.word, WordMetadata);
             }
         });
-        const result = Array.from(this.filteredData.values()).sort((a, b) => b.word.localeCompare(a.word));
+        const result = Array.from(this.data.values()).sort((a, b) => b.word.localeCompare(a.word));
         return Promise.resolve(result);
     }
 
@@ -253,14 +231,12 @@ export class InMemoryProvider implements Provider {
      * @returns this for chaining
      */
     public findBySuffix(suffix: string): Promise<WordMetadata[]> {
-        const currentData = this.filteredData.size ? this.filteredData : this.data; // Use filteredData if it exists
-        this.filteredData = new Map();
-        currentData.forEach((WordMetadata) => {
+        this.data.forEach((WordMetadata) => {
             if (WordMetadata.word.endsWith(suffix.toLowerCase())) {
-                this.filteredData.set(WordMetadata.word, WordMetadata);
+                this.data.set(WordMetadata.word, WordMetadata);
             }
         });
-        const result = Array.from(this.filteredData.values()).sort((a, b) => b.word.localeCompare(a.word));
+        const result = Array.from(this.data.values()).sort((a, b) => b.word.localeCompare(a.word));
         return Promise.resolve(result);
     }
     /**
@@ -269,14 +245,13 @@ export class InMemoryProvider implements Provider {
      * @returns this for chaining
      */
     public findBySubstring(substring: string): Promise<WordMetadata[]> {
-        const currentData = this.filteredData.size ? this.filteredData : this.data; // Use filteredData if it exists
-        this.filteredData = new Map();
-        currentData.forEach((WordMetadata) => {
+
+        this.data.forEach((WordMetadata) => {
             if (WordMetadata.word.includes(substring.toLowerCase())) {
-                this.filteredData.set(WordMetadata.word, WordMetadata);
+                this.data.set(WordMetadata.word, WordMetadata);
             }
         });
-        const result = Array.from(this.filteredData.values()).sort((a, b) => b.word.localeCompare(a.word));
+        const result = Array.from(this.data.values()).sort((a, b) => b.word.localeCompare(a.word));
         return Promise.resolve(result);
     }
 
@@ -287,17 +262,16 @@ export class InMemoryProvider implements Provider {
      * @returns this for chaining
      */
     public findByWordLengthRange(min: number, max: number): Promise<WordMetadata[]> {
-        const currentData = this.filteredData.size ? this.filteredData : this.data; // Use filteredData if it exists
-        this.filteredData = new Map();
-        currentData.forEach((WordMetadata) => {
+
+        this.data.forEach((WordMetadata) => {
             if (
                 WordMetadata.word.length >= min &&
                 WordMetadata.word.length <= max
             ) {
-                this.filteredData.set(WordMetadata.word, WordMetadata);
+                this.data.set(WordMetadata.word, WordMetadata);
             }
         });
-        const result = Array.from(this.filteredData.values()).sort((a, b) => b.word.localeCompare(a.word));
+        const result = Array.from(this.data.values()).sort((a, b) => b.word.localeCompare(a.word));
         return Promise.resolve(result);
     }
 
@@ -376,15 +350,4 @@ export class InMemoryProvider implements Provider {
         return jsonString;
     }
 
-    /**
-     * Reset the filtered data
-     * @returns this
-     */
-    public reset(): this {
-        this.filteredData = this.filterByLengthRange(
-            this.options.wordMinLength,
-            this.options.wordMaxLength
-        );
-        return this;
-    }
 }
