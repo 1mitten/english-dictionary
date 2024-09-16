@@ -12,10 +12,12 @@ router.get('/findBySuffix/:suffix', dictionaryController.findBySuffix);
 router.get('/findBySubstring/:substring', dictionaryController.findBySubstring);
 router.get('/findByDescription/:text', dictionaryController.findByDescription);
 router.get('/findByWordLengthRange/:min/:max', dictionaryController.findByWordLengthRange);
+router.get('/resourceData', dictionaryController.resourceData);
+router.get('/getRandomWords/:count', dictionaryController.getRandomWords);
+router.get('/getMetrics', dictionaryController.getMetrics);
+
 router.post('/findWordsByTags', dictionaryController.findWordsByTags);
 router.post('/findMany', dictionaryController.findMany);
-router.get('/getRandomWords/:count', dictionaryController.getRandomWords);
 router.post('/filter', dictionaryController.filter);
-router.get('/resourceData', dictionaryController.filter);
 
 export default router;

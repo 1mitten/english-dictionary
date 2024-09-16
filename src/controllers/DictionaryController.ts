@@ -118,4 +118,13 @@ export class DictionaryController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  async getMetrics(req: Request, res: Response): Promise<void> {
+    try {
+    const result = await dictionary.getMetrics();
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }

@@ -1,5 +1,6 @@
 import { WordMetadata } from './types/WordMetadata.type';
 import { ResourceData } from './types/ResourceData.type';
+import { Metrics } from './types/Metrics.type';
 export interface Provider {
     filter(regex: RegExp): Promise<WordMetadata[]>;
     find(word: string): Promise<WordMetadata | undefined>;
@@ -12,4 +13,5 @@ export interface Provider {
     findMany(words: string[]): Promise<WordMetadata[]>;
     getRandomWords(count: number): Promise<WordMetadata[]>;
     getResourceData(): Promise<ResourceData>;
+    getMetrics(): Promise<Metrics>;
 }

@@ -7,6 +7,7 @@ import clues_six from "./data/clues/clues_six.json";
 import { Options } from "./types/Options.type";
 import { DatasetLoader } from "./DatasetLoader";
 import { ResourceData } from "./types/ResourceData.type";
+import { Metrics } from "./types/Metrics.type";
 
 /**
  *  Default options that is suitable enough for a decent base
@@ -64,15 +65,15 @@ export class InMemoryProvider implements Provider {
     );
   }
   async getResourceData(): Promise<ResourceData> {
-    const tags = this.getDistinctTags()
+    const tags = this.getDistinctTags();
     return {
-      tags
+      tags,
     };
   }
 
   getDistinctTags(): string[] {
     const tags = new Set<string>();
-  
+
     // Iterate over the values (WordMetadata objects) in the Map
     for (const wordMetadata of this.data.values()) {
       // Check if tags exist and iterate over them
@@ -80,7 +81,7 @@ export class InMemoryProvider implements Provider {
         tags.add(tag); // Add each tag to the Set
       });
     }
-  
+
     // Return the distinct tags as an array
     return Array.from(tags);
   }
@@ -326,7 +327,7 @@ export class InMemoryProvider implements Provider {
   ): Promise<WordMetadata[]> {
     const taggedWords: WordMetadata[] = [];
     if (!tags || tags.length === 0) return taggedWords;
-  
+
     // Iterate through the data Map and filter words by tags
     this.data.forEach((WordMetadata) => {
       if (WordMetadata.tags) {
@@ -349,10 +350,10 @@ export class InMemoryProvider implements Provider {
         }
       }
     });
-  
+
     return taggedWords.sort((a, b) => b.word.localeCompare(a.word));
   }
-  
+
   /**
    * Exports to stringed JSON
    * @param removeNullValues default = true, set to false to retain null values
@@ -371,5 +372,60 @@ export class InMemoryProvider implements Provider {
 
     const jsonString = JSON.stringify(dataObject, null, 2);
     return jsonString;
+  }
+
+  async getMetrics(): Promise<Metrics> {
+    let totalWords = 0;
+    let dictionaryWords = 0;
+    let nonDictionaryWords = 0;
+    let wordsByLengthMap: Map<number, number> = new Map();
+    let tagsMap: Map<string, number> = new Map();
+
+    // Iterate over the words in the data map
+    this.data.forEach((metadata) => {
+      totalWords++;
+
+      // Check if the word is in the dictionary
+      if (metadata.isDictionaryWord) {
+        dictionaryWords++;
+      } else {
+        nonDictionaryWords++;
+      }
+
+      // Count word length
+      const wordLength = metadata.word.length;
+      const currentCount = wordsByLengthMap.get(wordLength) || 0;
+      wordsByLengthMap.set(wordLength, currentCount + 1);
+
+      // Count tags
+      if (metadata.tags) {
+        metadata.tags.forEach((tag) => {
+          const currentTagCount = tagsMap.get(tag) || 0;
+          tagsMap.set(tag, currentTagCount + 1);
+        });
+      }
+    });
+
+    // Convert wordsByLengthMap to an array of objects with 'length' and 'count'
+    const wordsByLength = Array.from(wordsByLengthMap.entries()).map(
+      ([length, count]) => ({
+        length,
+        count,
+      })
+    ).sort((a, b) => b.count - a.count);
+
+    // Convert tagsMap to an array of objects with 'tag' and 'count'
+    const tags = Array.from(tagsMap.entries()).map(([tag, count]) => ({
+      tag,
+      count,
+    })).sort((a,b) => a.count - b.count);
+
+    return Promise.resolve({
+      totalWords,
+      dictionaryWords,
+      nonDictionaryWords,
+      wordsByLength,
+      tags, 
+    });
   }
 }

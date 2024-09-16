@@ -2,6 +2,7 @@ import { WordMetadata } from './types/WordMetadata.type';
 import { Provider } from './Provider';
 import { InMemoryProvider } from './InMemoryProvider';
 import { ResourceData } from './types/ResourceData.type';
+import { Metrics } from './types/Metrics.type';
 
 
 export class Dictionary implements Provider {
@@ -48,6 +49,9 @@ export class Dictionary implements Provider {
   }
   filter(regex: RegExp): Promise<WordMetadata[]> {
     return this.provider.filter(regex);
+  }
+  getMetrics(): Promise<Metrics> {
+    return this.provider.getMetrics();
   }
 
 }
