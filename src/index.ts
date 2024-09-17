@@ -2,10 +2,8 @@ export { WordMetadata } from './types/WordMetadata.type'
 
 import express from 'express';
 import DictionaryRoutes from './routes/DictionaryRoutes';
-import { splitJsonFile } from './utils/File.util'
-const cors = require('cors');
 
-splitJsonFile('/code/database.json');
+const cors = require('cors');
 
 // Initialize the Express app
 const app = express();
