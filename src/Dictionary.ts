@@ -53,5 +53,7 @@ export class Dictionary implements Provider {
   getMetrics(): Promise<Metrics> {
     return this.provider.getMetrics();
   }
-
+  exportToJson(): Promise<string> {
+      return this.provider.exportToJson();
+  }
 }

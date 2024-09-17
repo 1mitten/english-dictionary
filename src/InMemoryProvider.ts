@@ -359,9 +359,14 @@ export class InMemoryProvider implements Provider {
    * @param removeNullValues default = true, set to false to retain null values
    * @returns stringified JSON
    */
-  public exportToJsonString(removeNullValues = true): string {
+  public async exportToJson(
+    removeNullValues = true,
+    removeEscapeChars = true
+  ): Promise<string> {
+    // Create an object from entries in `this.data`
     const dataObject = Object.fromEntries(this.data);
-
+  
+    // Remove null values if requested
     if (removeNullValues) {
       for (const key in dataObject) {
         if (dataObject[key] === null) {
@@ -369,11 +374,21 @@ export class InMemoryProvider implements Provider {
         }
       }
     }
-
-    const jsonString = JSON.stringify(dataObject, null, 2);
+  
+    // Wrap the object inside an array to ensure it becomes a JSON array
+    const jsonArray = [dataObject];
+  
+    // Convert the array to a JSON string
+    let jsonString = JSON.stringify(jsonArray, null, 2);
+  
+    // Remove escape characters if requested
+    if (removeEscapeChars) {
+      jsonString = jsonString.replace(/\\n|\\t|\\/g, "");
+    }
+  
     return jsonString;
   }
-
+  
   async getMetrics(): Promise<Metrics> {
     let totalWords = 0;
     let dictionaryWords = 0;
@@ -407,25 +422,27 @@ export class InMemoryProvider implements Provider {
     });
 
     // Convert wordsByLengthMap to an array of objects with 'length' and 'count'
-    const wordsByLength = Array.from(wordsByLengthMap.entries()).map(
-      ([length, count]) => ({
+    const wordsByLength = Array.from(wordsByLengthMap.entries())
+      .map(([length, count]) => ({
         length,
         count,
-      })
-    ).sort((a, b) => a.length - b.length);
+      }))
+      .sort((a, b) => a.length - b.length);
 
     // Convert tagsMap to an array of objects with 'tag' and 'count'
-    const tags = Array.from(tagsMap.entries()).map(([tag, count]) => ({
-      tag,
-      count,
-    })).sort((a,b) => b.count - a.count);
+    const tags = Array.from(tagsMap.entries())
+      .map(([tag, count]) => ({
+        tag,
+        count,
+      }))
+      .sort((a, b) => b.count - a.count);
 
     return Promise.resolve({
       totalWords,
       dictionaryWords,
       nonDictionaryWords,
       wordsByLength,
-      tags, 
+      tags,
     });
   }
 }

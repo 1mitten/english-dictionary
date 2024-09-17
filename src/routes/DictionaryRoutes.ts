@@ -16,6 +16,8 @@ router.get('/resourceData', dictionaryController.resourceData);
 router.get('/getRandomWords/:count', dictionaryController.getRandomWords);
 router.get('/getMetrics', dictionaryController.getMetrics);
 
+router.get('/exportToJson', dictionaryController.exportToJson);
+
 router.post('/findWordsByTags', dictionaryController.findWordsByTags);
 router.post('/findMany', dictionaryController.findMany);
 router.post('/filter', dictionaryController.filter);

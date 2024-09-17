@@ -92,7 +92,7 @@ describe("Dictionary", () => {
   });
 
   it("should export data as a JSON string", async () => {
-    const result = await inmemoryProvider.exportToJsonString();
+    const result = await inmemoryProvider.exportToJson();
     expect(inmemoryProvider.words?.length).toBe(5);
     expect(typeof result).toBe("string");
   });

@@ -14,4 +14,5 @@ export interface Provider {
     getRandomWords(count: number): Promise<WordMetadata[]>;
     getResourceData(): Promise<ResourceData>;
     getMetrics(): Promise<Metrics>;
+    exportToJson(): Promise<string>;
 }
