@@ -1,11 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
-
 /**
- * Reads a large JSON file where all records are nested inside one top-level object, 
- * splits it into multiple files based on batch size, and writes each batch to a separate output file.
+ * Reads a large JSON file containing a flat array of objects, splits it into multiple files based on batch size,
+ * and writes each batch as a JSON array to a separate output file.
  * @param inputFile - The path to the input JSON file.
- * @param batchSize - The number of top-level objects (key-value pairs) per batch/file.
+ * @param batchSize - The number of objects per batch/file.
  */
 export async function splitJsonFile(inputFile: string, batchSize: number = 40000) {
     try {
@@ -13,47 +12,40 @@ export async function splitJsonFile(inputFile: string, batchSize: number = 40000
         const fileContent = fs.readFileSync(inputFile, 'utf-8');
         console.log(`File content read successfully.`);
 
-        // Step 2: Parse the stringified JSON content into a JavaScript object
+        // Step 2: Parse the stringified JSON content into an array
         let data;
         try {
-            data = JSON.parse(fileContent);  // Expecting the file to contain a valid JSON object
+            data = JSON.parse(fileContent);  // Expecting the file to contain a valid JSON array
         } catch (parseError: any) {
             console.error(`Error parsing JSON file. Ensure it contains valid JSON. Error: ${parseError.message}`);
             return;
         }
 
-        // Step 3: Assume that all the records are inside data[0] as a single object
-        if (!Array.isArray(data) || !data[0]) {
-            console.error('The JSON file should contain an array with a top-level object at data[0].');
+        // Step 3: Ensure the parsed data is an array
+        if (!Array.isArray(data)) {
+            console.error('The JSON file should contain an array of objects.');
             return;
         }
 
-        const topLevelObject = data[0];  // Assuming all records are within this object
+        console.log(`Total number of records in the array: ${data.length}`);
 
-        // Step 4: Convert the top-level object into an array of key-value pairs
-        const entries = Object.entries(topLevelObject);  // This creates an array of [key, value] pairs
-        console.log(`Total number of records (key-value pairs) in the object: ${entries.length}`);
-
-        // Step 5: Loop through the entries and split them into batches
+        // Step 4: Loop through the array and split it into batches
         let fileIndex = 1;
         let totalFilesCreated = 0;
 
-        for (let startIndex = 0; startIndex < entries.length; startIndex += batchSize) {
+        for (let startIndex = 0; startIndex < data.length; startIndex += batchSize) {
             // Calculate end index for the current batch
-            const endIndex = Math.min(startIndex + batchSize, entries.length);
+            const endIndex = Math.min(startIndex + batchSize, data.length);
 
             // Slice the array to get the batch of records from startIndex to endIndex
-            const batchEntries = entries.slice(startIndex, endIndex);
+            const batchArray = data.slice(startIndex, endIndex);
 
-            // Convert batch back to an object
-            const batchObject = Object.fromEntries(batchEntries);
+            console.log(`Writing records from index ${startIndex} to ${endIndex - 1} (Total: ${batchArray.length} records)`);
 
-            console.log(`Writing records from index ${startIndex} to ${endIndex - 1} (Total: ${batchEntries.length} records)`);
-
-            // Step 6: Write the batch to a separate output file
+            // Step 5: Write the batch to a separate output file as a JSON array
             const outputFileName = `data_${fileIndex}.json`;
             try {
-                fs.writeFileSync(outputFileName, JSON.stringify(batchObject, null, 2));
+                fs.writeFileSync(outputFileName, JSON.stringify(batchArray, null, 2));
                 console.log(`Batch written to ${outputFileName} successfully.`);
                 totalFilesCreated++;
             } catch (writeError: any) {
