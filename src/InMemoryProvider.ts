@@ -412,13 +412,13 @@ export class InMemoryProvider implements Provider {
         length,
         count,
       })
-    ).sort((a, b) => b.count - a.count);
+    ).sort((a, b) => a.length - b.length);
 
     // Convert tagsMap to an array of objects with 'tag' and 'count'
     const tags = Array.from(tagsMap.entries()).map(([tag, count]) => ({
       tag,
       count,
-    })).sort((a,b) => a.count - b.count);
+    })).sort((a,b) => b.count - a.count);
 
     return Promise.resolve({
       totalWords,
