@@ -360,11 +360,10 @@ export class InMemoryProvider implements Provider {
    * @returns stringified JSON
    */
   public async exportToJson(
-    removeNullValues = true,
-    removeEscapeChars = true
+    removeNullValues = true
   ): Promise<string> {
-    // Create an object from entries in `this.data`
-    const dataObject = Object.fromEntries(this.data);
+    // Create an object from entries in `this.data` and explicitly type it as Record<string, any>
+    const dataObject: Record<string, any> = Object.fromEntries(this.data);
   
     // Remove null values if requested
     if (removeNullValues) {
@@ -378,17 +377,16 @@ export class InMemoryProvider implements Provider {
     // Wrap the object inside an array to ensure it becomes a JSON array
     const jsonArray = [dataObject];
   
-    // Convert the array to a JSON string
+    // Convert the array to a JSON string (let JSON.stringify handle the escaping)
     let jsonString = JSON.stringify(jsonArray, null, 2);
-  
-    // Remove escape characters if requested
-    if (removeEscapeChars) {
-      jsonString = jsonString.replace(/\\n|\\t|\\/g, "");
-    }
   
     return jsonString;
   }
   
+  
+  
+  
+
   async getMetrics(): Promise<Metrics> {
     let totalWords = 0;
     let dictionaryWords = 0;
