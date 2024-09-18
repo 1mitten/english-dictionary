@@ -5,11 +5,20 @@ import { Provider } from './Provider'
 import { MongoClient, Collection } from 'mongodb';
 
 export class MongoProvider implements Provider {
+    private client: MongoClient;
     private collection: Collection<WordMetadata>;
 
     constructor(private dbUri: string, private dbName: string, private collectionName: string) {
-        const client = new MongoClient(this.dbUri);
-        this.collection = client.db(this.dbName).collection<WordMetadata>(this.collectionName);
+        this.client = new MongoClient(this.dbUri);
+        this.connect();
+        this.collection = this.client.db(this.dbName).collection<WordMetadata>(this.collectionName);
+    }
+
+    async connect(): Promise<void> {
+
+        await this.client.connect();
+        this.collection = this.client.db(this.dbName).collection<WordMetadata>(this.collectionName);
+
     }
 
     async filter(regex: RegExp): Promise<WordMetadata[]> {
@@ -17,7 +26,9 @@ export class MongoProvider implements Provider {
     }
 
     async find(word: string): Promise<WordMetadata | undefined> {
-        return await this.collection.findOne({ word });
+        const record = await this.collection.findOne({ word });
+        if (record === null) return;
+        return record;
     }
 
     async findByPrefix(prefix: string): Promise<WordMetadata[]> {
@@ -53,7 +64,12 @@ export class MongoProvider implements Provider {
     }
 
     async getRandomWords(count: number): Promise<WordMetadata[]> {
-        return await this.collection.aggregate([{ $sample: { size: count } }]).toArray();
+        return [{
+            word: 'random not implemented',
+            description: 'desc',
+            isDictionaryWord: true
+        }];
+        // const test = await this.collection.aggregate([{ $sample: { size: count } }]).toArray();
     }
 
     async getResourceData(): Promise<ResourceData> {

@@ -1,8 +1,10 @@
 // src/controllers/dictionaryController.ts
 import { Request, Response } from "express";
 import { Dictionary } from "../Dictionary";
+import { MongoProvider } from '../MongoProvider';
 
-const dictionary = new Dictionary();
+const mongoProvider = new MongoProvider('mongodb://localhost:27017', 'your_database', 'words');
+const dictionary = new Dictionary(mongoProvider);
 
 export class DictionaryController {
   async find(req: Request, res: Response): Promise<void> {
@@ -112,7 +114,7 @@ export class DictionaryController {
 
   async resourceData(req: Request, res: Response): Promise<void> {
     try {
-    const result = await dictionary.getResourceData();
+      const result = await dictionary.getResourceData();
       res.json(result);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -121,7 +123,7 @@ export class DictionaryController {
 
   async getMetrics(req: Request, res: Response): Promise<void> {
     try {
-    const result = await dictionary.getMetrics();
+      const result = await dictionary.getMetrics();
       res.json(result);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -130,7 +132,7 @@ export class DictionaryController {
 
   async exportToJson(req: Request, res: Response): Promise<void> {
     try {
-    const result = await dictionary.exportToJson();
+      const result = await dictionary.exportToJson();
       res.json(result);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
