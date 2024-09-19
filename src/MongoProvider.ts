@@ -77,7 +77,14 @@ export class MongoProvider implements Provider {
     }
 
     async getMetrics(): Promise<Metrics> {
-        return {} as Metrics;
+        return {
+            totalWords: 0,
+            dictionaryWords: 0,
+            nonDictionaryWords: 0,
+            wordsByLength:[],  // Changed to array
+            tags: [],
+
+        } as Metrics;
     }
 
     async exportToJson(): Promise<string> {

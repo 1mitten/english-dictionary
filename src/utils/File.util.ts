@@ -33,6 +33,8 @@ export async function splitJsonFile(inputFile: string, batchSize: number = 40000
         let fileIndex = 1;
         let totalFilesCreated = 0;
 
+        let mongoImport = '';
+
         for (let startIndex = 0; startIndex < data.length; startIndex += batchSize) {
             // Calculate end index for the current batch
             const endIndex = Math.min(startIndex + batchSize, data.length);
@@ -53,10 +55,18 @@ export async function splitJsonFile(inputFile: string, batchSize: number = 40000
             }
 
             fileIndex++;
+            mongoImport = mongoImport + `mongoimport --db your_database --collection words --file data_${fileIndex-1}.json --jsonArray\n`
+       
         }
 
         console.log(`File splitting completed successfully.`);
         console.log(`Total files created: ${totalFilesCreated}`);
+
+        console.log('');
+        console.log(mongoImport)
+
+  
+
     } catch (error: any) {
         console.error(`Error during the split operation: ${error.message}`);
     }
