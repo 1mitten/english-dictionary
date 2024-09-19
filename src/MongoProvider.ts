@@ -77,15 +77,67 @@ export class MongoProvider implements Provider {
     }
 
     async getMetrics(): Promise<Metrics> {
+        const aggregationResult = await this.collection.aggregate([
+            {
+                // Add a field for word length and ensure tags are always an array
+                $addFields: {
+                    wordLength: { $strLenCP: "$word" },
+                    tags: { $ifNull: ["$tags", []] }
+                }
+            },
+            {
+                // Group to calculate metrics
+                $group: {
+                    _id: null,
+                    totalWords: { $sum: 1 },  // Total count of words
+                    dictionaryWords: { $sum: { $cond: [{ $eq: ["$isDictionaryWord", true] }, 1, 0] } }, // Count of dictionary words
+                    nonDictionaryWords: { $sum: { $cond: [{ $eq: ["$isDictionaryWord", false] }, 1, 0] } }, // Count of non-dictionary words
+                    wordsByLength: { $push: "$wordLength" }, // Collect word lengths
+                    tags: { $push: "$tags" } // Collect all tags
+                }
+            },
+            {
+                // Unwind wordsByLength and tags for further processing
+                $project: {
+                    totalWords: 1,
+                    dictionaryWords: 1,
+                    nonDictionaryWords: 1,
+                    wordsByLength: { $reduce: { input: "$wordsByLength", initialValue: [], in: { $concatArrays: ["$$value", [{ length: "$$this", count: 1 }]] } } },
+                    tags: { $reduce: { input: "$tags", initialValue: [], in: { $concatArrays: ["$$value", "$$this"] } } }
+                }
+            },
+            {
+                // Group by word length and tags
+                $facet: {
+                    wordsByLength: [
+                        { $unwind: "$wordsByLength" },
+                        { $group: { _id: "$wordsByLength.length", count: { $sum: "$wordsByLength.count" } } },
+                        { $sort: { _id: 1 } },
+                        { $project: { length: "$_id", count: 1, _id: 0 } }
+                    ],
+                    tags: [
+                        { $unwind: "$tags" },
+                        { $group: { _id: "$tags", count: { $sum: 1 } } },
+                        { $sort: { count: -1 } },
+                        { $project: { tag: "$_id", count: 1, _id: 0 } }
+                    ]
+                }
+            }
+        ]).toArray();
+    
+        const metrics = aggregationResult[0] || { totalWords: 0, dictionaryWords: 0, nonDictionaryWords: 0, wordsByLength: [], tags: [] };
+    
         return {
-            totalWords: 0,
-            dictionaryWords: 0,
-            nonDictionaryWords: 0,
-            wordsByLength:[],  // Changed to array
-            tags: [],
-
+            totalWords: metrics.totalWords,
+            dictionaryWords: metrics.dictionaryWords,
+            nonDictionaryWords: metrics.nonDictionaryWords,
+            wordsByLength: metrics.wordsByLength,
+            tags: metrics.tags
         } as Metrics;
     }
+    
+    
+    
 
     async exportToJson(): Promise<string> {
         const allWords = await this.collection.find().toArray();
